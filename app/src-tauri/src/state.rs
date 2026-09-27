@@ -19,7 +19,13 @@ pub struct AppState {
 
 impl AppState {
     pub fn new(paths: Paths) -> Self {
-        let settings = Settings::load(&paths.settings_file());
+        let (settings, stale) = Settings::load_reporting(&paths.settings_file());
+        if stale {
+            // Persist the migrated form so the file on disk always reflects the running version.
+            if let Err(e) = settings.save(&paths.settings_file()) {
+                log::warn!("could not write migrated settings: {e}");
+            }
+        }
         AppState { paths, settings: Mutex::new(settings), tex: Mutex::new(None), compiler: Arc::new(Compiler::default()), tex_installer: Arc::new(Installer::default()) }
     }
 

@@ -120,14 +120,25 @@ pub const ENGINES: [&str; 3] = ["pdflatex", "xelatex", "lualatex"];
 
 impl Settings {
     pub fn load(path: &Path) -> Settings {
-        match std::fs::read_to_string(path) {
-            Ok(text) => serde_json::from_str::<Settings>(&text).unwrap_or_else(|e| {
-                log::warn!("settings.json unreadable ({e}); using defaults");
-                Settings::default()
-            }),
-            Err(_) => Settings::default(),
-        }
-        .normalised()
+        let (s, _) = Self::load_reporting(path);
+        s
+    }
+
+    /// Load and normalise; the flag says whether the file on disk is older than `SETTINGS_VERSION`
+    /// (or missing/unreadable) so the caller can write the migrated form back once.
+    pub fn load_reporting(path: &Path) -> (Settings, bool) {
+        let (raw, readable) = match std::fs::read_to_string(path) {
+            Ok(text) => match serde_json::from_str::<Settings>(&text) {
+                Ok(s) => (s, true),
+                Err(e) => {
+                    log::warn!("settings.json unreadable ({e}); using defaults");
+                    (Settings::default(), false)
+                }
+            },
+            Err(_) => (Settings::default(), false),
+        };
+        let stale = !readable || raw.version < SETTINGS_VERSION;
+        (raw.normalised(), stale)
     }
 
     pub fn save(&self, path: &Path) -> Result<()> {
@@ -184,6 +195,20 @@ impl Settings {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn load_reports_when_the_file_is_behind() {
+        let dir = tempfile::tempdir().unwrap();
+        let p = dir.path().join("settings.json");
+        std::fs::write(&p, r#"{"version":3,"theme":"ink"}"#).unwrap();
+        let (s, stale) = Settings::load_reporting(&p);
+        assert!(stale);
+        assert_eq!(s.theme, "ink");
+        assert_eq!(s.version, SETTINGS_VERSION);
+        s.save(&p).unwrap();
+        let (_, stale) = Settings::load_reporting(&p);
+        assert!(!stale, "once written back the file is current");
+    }
 
     #[test]
     fn defaults_roundtrip() {

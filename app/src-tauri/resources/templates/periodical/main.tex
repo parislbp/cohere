@@ -1,0 +1,92 @@
+% {{FOLDER}}/main.tex — {{TITLE}}
+% texref · periodical template (two columns) · created {{CREATED}}
+% Build: make · make launch (Skim watch) · make name NAME=<pdf> · make archive TAG=<tag>
+% Two-column notes: xltabular/longtable cannot be used; use tabularx on \columnwidth inside table,
+% or table*/figure* (with \textwidth) to span both columns. See {{UNIT_DIR}}/{{FIRST_UNIT_FILE}}.
+% =====================================================================================================================
+\documentclass[10pt,letterpaper,twocolumn]{article}
+\usepackage[margin=0.85in,columnsep=20pt]{geometry}
+{{INCLUDE:packages}}
+\setstretch{1.08}
+{{INCLUDE:tables}}
+{{INCLUDE:code}}
+
+% ---------------------------------------------------------------- document metadata (edit here)
+\newcommand{\doctitle}{{{TITLE}}}
+\newcommand{\docsubtitle}{{{SUBTITLE}}}
+\newcommand{\docauthor}{{{AUTHOR}}}
+\newcommand{\docdate}{{{DATE}}}
+\newcommand{\docversion}{{{VERSION}}}
+\newcommand{\docfootline}{version \docversion}
+
+% ---------------------------------------------------------------- headings
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection\quad}{0pt}{}
+\titlespacing*{\section}{0pt}{12pt}{5pt}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection\quad}{0pt}{}
+\titlespacing*{\subsection}{0pt}{8pt}{3pt}
+\titleformat{\subsubsection}{\normalfont\normalsize\itshape}{\thesubsubsection\quad}{0pt}{}
+\titlespacing*{\subsubsection}{0pt}{6pt}{2pt}
+% Appendices print "Appendix A" on its own line with the (optional) name beneath.
+\newcommand{\startappendices}{%
+  \appendix
+  \titleformat{\section}[display]{\normalfont\large\bfseries}{Appendix~\thesection}{2pt}{\large}
+  \titlespacing*{\section}{0pt}{16pt}{6pt}
+}
+% Title block + abstract spanning both columns
+\makeatletter
+\newcommand{\spanningtop}[1]{\twocolumn[\begin{@twocolumnfalse}#1\end{@twocolumnfalse}]}
+\makeatother
+
+% ---------------------------------------------------------------- running header
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape \doctitle}
+\fancyhead[R]{\small \thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{hair}\leaders\hrule height \headrulewidth\hfill}}
+\fancypagestyle{plain}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}}
+
+% ---------------------------------------------------------------- theorems
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}{Proposition}[section]
+
+{{INCLUDE:macros}}
+{{INCLUDE:bib}}
+\renewcommand*{\bibfont}{\small}
+{{INCLUDE:hyperref}}
+
+\begin{document}
+
+% =====================================================================================================================
+\spanningtop{%
+\begin{center}
+{\LARGE\bfseries \doctitle\par}
+\vspace{6pt}
+{\large \docsubtitle\par}
+\vspace{8pt}
+{\normalsize \docauthor\par}
+\vspace{2pt}
+{\small \docdate \quad\textperiodcentered\quad \docfootline\par}
+\end{center}
+\vspace{2pt}
+\input{{{UNIT_DIR}}/abstract}
+\vspace{12pt}
+}
+\thispagestyle{plain}
+
+% =====================================================================================================================
+% >>> texref:units  (managed by tex-add / tex-rm — edit order here if you must, keep the markers)
+{{UNIT_INPUTS}}
+% <<< texref:units
+
+% =====================================================================================================================
+\startappendices
+% >>> texref:appendices
+{{APPENDIX_INPUTS}}
+% <<< texref:appendices
+
+% =====================================================================================================================
+\printbibliography
+
+\end{document}

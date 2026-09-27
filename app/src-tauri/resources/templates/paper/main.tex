@@ -1,0 +1,99 @@
+% {{FOLDER}}/main.tex — {{TITLE}}
+% texref · paper template (two columns) · created {{CREATED}}
+% Build: make · make launch (Skim watch) · make name NAME=<pdf> · make archive TAG=<tag>
+% Two-column notes: xltabular/longtable cannot be used; use tabularx on \columnwidth inside table,
+% or table*/figure* (with \textwidth) to span both columns. See {{UNIT_DIR}}/{{FIRST_UNIT_FILE}}.
+% Default LaTeX fonts, as in the other house templates. Style macros (defined in the paperstyle block): \deck{..} \lead{X}{..} \panelhead{..} \readingguide{..} \eqnote{..}
+%   \pill{A} \pillaccent{B} \colophon{..}   environments: summary · eqpanel · eqhero · figframe · pullquote · papertable
+% =====================================================================================================================
+\documentclass[10pt,letterpaper,twocolumn]{article}
+\usepackage[margin=0.8in,columnsep=24pt]{geometry}
+% ---------------------------------------------------------------- core packages
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage[dvipsnames,table]{xcolor}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\setlist{itemsep=3pt,topsep=4pt,leftmargin=1.35em}
+\usepackage{parskip}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{needspace}
+{{INCLUDE:tables}}
+{{INCLUDE:code}}
+{{INCLUDE:paperstyle}}
+\usepackage{bm}
+\setstretch{1.08}
+\setlength{\columnseprule}{0.3pt}
+\makeatletter   % color the column rule (the kernel draws it with \normalcolor; multicol's \columnseprulecolor does not apply)
+\patchcmd{\@outputdblcol}{\normalcolor\vrule}{\color{hairtwo}\vrule}{}{}
+\makeatother
+
+% ---------------------------------------------------------------- document metadata (edit here)
+\newcommand{\doctitle}{{{TITLE}}}
+\newcommand{\docshorttitle}{\doctitle}          % running header; shorten if the title is long
+\newcommand{\docsubtitle}{{{SUBTITLE}}}
+\newcommand{\doceyebrow}{{{TAGLINE}}}           % small letterspaced line above the title, e.g. "Frontier · Diligence Brief"
+\newcommand{\docauthor}{{{AUTHOR}}}
+\newcommand{\docdate}{{{DATE}}}
+\newcommand{\docversion}{{{VERSION}}}           % prints faded at the foot of every page
+
+% ---------------------------------------------------------------- theorems
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{assumption}{Assumption}[section]
+
+% Title block + abstract spanning both columns
+\makeatletter
+\newcommand{\spanningtop}[1]{\twocolumn[\begin{@twocolumnfalse}#1\end{@twocolumnfalse}]}
+\makeatother
+% Sections flow in the columns. Put \unitpage before a \section to start it on a fresh page (rule suppressed).
+\newcommand{\unitpage}{\clearpage\secrulefalse}
+
+{{INCLUDE:macros}}
+{{INCLUDE:bib}}
+\renewcommand*{\bibfont}{\small}
+{{INCLUDE:hyperref}}
+\hypersetup{linkcolor=accent,citecolor=accent,urlcolor=accent}
+
+\begin{document}
+
+% =====================================================================================================================
+\spanningtop{%
+\begin{center}
+\ifdefempty{\doceyebrow}{}{{\sffamily\scriptsize\bfseries\color{ink3}\textls[180]{\MakeUppercase{\doceyebrow}}\par}\vspace{14pt}}
+{\LARGE\bfseries \doctitle\par}
+\vspace{6pt}
+{\large\itshape\color{ink2} \docsubtitle\par}
+\vspace{10pt}
+{\normalsize \docauthor\par}
+\vspace{3pt}
+{\small\color{ink3} \docdate\par}
+\end{center}
+\vspace{10pt}
+\input{{{UNIT_DIR}}/abstract}
+\vspace{10pt}
+}
+\thispagestyle{plain}
+\secrulefalse   % the first section sits under the abstract panel without a hairline
+
+% =====================================================================================================================
+% >>> texref:units  (managed by tex-add / tex-rm — edit order here if you must, keep the markers)
+{{UNIT_INPUTS}}
+% <<< texref:units
+
+% =====================================================================================================================
+\startappendices
+% >>> texref:appendices
+{{APPENDIX_INPUTS}}
+% <<< texref:appendices
+
+% =====================================================================================================================
+\printbibliography
+
+\colophon{\textbf{Colophon.} \doctitle, version \docversion.}
+
+\end{document}

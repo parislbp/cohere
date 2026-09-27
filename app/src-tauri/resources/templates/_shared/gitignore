@@ -1,0 +1,5 @@
+# texref project
+aux/
+*.synctex.gz
+*.synctex(busy)
+.DS_Store

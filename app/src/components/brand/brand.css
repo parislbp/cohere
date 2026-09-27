@@ -1,0 +1,22 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.brand__mark {
+  color: var(--accent);
+  flex: none;
+}
+.brand__word {
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+.brand-mark {
+  transition: transform var(--dur-4) var(--ease-spring), color var(--dur-3) var(--ease);
+}
+.brand:hover .brand-mark {
+  transform: rotate(-8deg);
+}

@@ -1,0 +1,88 @@
+% {{FOLDER}}/main.tex — {{TITLE}}
+% texref · paper template (one column) · created {{CREATED}}
+% Build: make · make launch (Skim watch) · make name NAME=<pdf> · make archive TAG=<tag>
+% Default LaTeX fonts, as in the other house templates. Style macros (defined in the paperstyle block): \deck{..} \lead{X}{..} \panelhead{..} \readingguide{..} \eqnote{..}
+%   \pill{A} \pillaccent{B} \colophon{..}   environments: summary · eqpanel · eqhero · figframe · pullquote · papertable
+% Put \unitpage on the line before a \section to start it on a fresh page (the hairline above it is suppressed).
+% =====================================================================================================================
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+% ---------------------------------------------------------------- core packages
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage[dvipsnames,table]{xcolor}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\setlist{itemsep=3pt,topsep=4pt,leftmargin=1.35em}
+\usepackage{parskip}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{needspace}
+\usepackage{xltabular}
+{{INCLUDE:tables}}
+{{INCLUDE:code}}
+{{INCLUDE:paperstyle}}
+\usepackage{bm}
+\setstretch{1.15}
+
+% ---------------------------------------------------------------- document metadata (edit here)
+\newcommand{\doctitle}{{{TITLE}}}
+\newcommand{\docshorttitle}{\doctitle}          % running header; shorten if the title is long
+\newcommand{\docsubtitle}{{{SUBTITLE}}}
+\newcommand{\doceyebrow}{{{TAGLINE}}}           % small letterspaced line above the title, e.g. "Frontier · Diligence Brief"
+\newcommand{\docauthor}{{{AUTHOR}}}
+\newcommand{\docdate}{{{DATE}}}
+\newcommand{\docversion}{{{VERSION}}}           % prints faded at the foot of every page
+
+% ---------------------------------------------------------------- theorems
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{assumption}{Assumption}[section]
+
+% \unitpage before a \section: fresh page, no hairline above the heading.
+\newcommand{\unitpage}{\clearpage\secrulefalse}
+
+{{INCLUDE:macros}}
+{{INCLUDE:bib}}
+{{INCLUDE:hyperref}}
+\hypersetup{linkcolor=accent,citecolor=accent,urlcolor=accent}
+
+\begin{document}
+\thispagestyle{plain}
+
+% =====================================================================================================================
+\begin{center}
+\ifdefempty{\doceyebrow}{}{{\sffamily\scriptsize\bfseries\color{ink3}\textls[180]{\MakeUppercase{\doceyebrow}}\par}\vspace{14pt}}
+{\LARGE\bfseries \doctitle\par}
+\vspace{6pt}
+{\large\itshape\color{ink2} \docsubtitle\par}
+\vspace{10pt}
+{\normalsize \docauthor\par}
+\vspace{3pt}
+{\small\color{ink3} \docdate\par}
+\end{center}
+\vspace{12pt}
+
+\input{{{UNIT_DIR}}/abstract}
+\secrulefalse   % the first section sits under the abstract panel without a hairline
+
+% =====================================================================================================================
+% >>> texref:units  (managed by tex-add / tex-rm — edit order here if you must, keep the markers)
+{{UNIT_INPUTS}}
+% <<< texref:units
+
+% =====================================================================================================================
+\startappendices
+% >>> texref:appendices
+{{APPENDIX_INPUTS}}
+% <<< texref:appendices
+
+% =====================================================================================================================
+\printbibliography
+
+\colophon{\textbf{Colophon.} \doctitle, version \docversion.}
+
+\end{document}

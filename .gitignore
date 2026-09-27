@@ -1,0 +1,37 @@
+# ── never commit ───────────────────────────────────────────────────────────────
+# secrets and keys (all live in the macOS keychain; see docs/plan/10-release.md)
+*.key
+*.p12
+*.pem
+*.mobileprovision
+.env
+.env.*
+**/secrets/
+# private chat logs and scratch notes
+/transcripts/
+/notes/
+
+# ── build output ───────────────────────────────────────────────────────────────
+node_modules/
+app/dist/
+app/src-tauri/target/
+app/src-tauri/gen/
+/dist/
+/release/
+*.dmg
+*.app.tar.gz
+*.app.tar.gz.sig
+latest.json
+
+# ── test artefacts ─────────────────────────────────────────────────────────────
+app/playwright-report/
+app/test-results/
+app/coverage/
+
+# ── editors / os ───────────────────────────────────────────────────────────────
+.DS_Store
+*.local
+*.log
+.idea/
+.vscode/
+*.swp

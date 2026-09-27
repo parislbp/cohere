@@ -1,0 +1,16 @@
+/* Project-scope outline: file badges at file boundaries and the unresolved-inputs footer. */
+.onode__file {
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: var(--ink-4);
+  font-family: var(--font-mono);
+  flex: none;
+  max-width: 9ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.outline__missing {
+  padding: 6px 8px;
+  font-size: var(--text-2xs);
+  color: var(--ink-4);
+}

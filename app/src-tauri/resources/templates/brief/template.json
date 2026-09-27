@@ -1,0 +1,26 @@
+{
+  "key": "brief",
+  "name": "Brief",
+  "short_name": "Brief",
+  "icon": "tplBrief",
+  "description": "No cover page: title block, inline abstract, numbered sections, appendices, references (article class)",
+  "documentclass": "article",
+  "unit": "section",
+  "unit_cmd": "section",
+  "sub_cmd": "subsection",
+  "unit_dir": "sections",
+  "unit_label": "sec",
+  "abstract": true,
+  "toc": false,
+  "appendices": true,
+  "twocolumn": false,
+  "defaults": {
+    "units": 4,
+    "subunits": 1,
+    "appendices": 1
+  },
+  "prompts": {
+    "subtitle": true,
+    "tagline": false
+  }
+}

@@ -1,0 +1,65 @@
+/* Cohere design tokens — structure (theme-independent). Colours live in themes.css. */
+
+:root {
+  /* type */
+  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Inter, sans-serif;
+  --font-serif: "Times New Roman", Times, "Nimbus Roman", "Liberation Serif", serif;
+  --font-mono: "SF Mono", Menlo, "JetBrains Mono", Consolas, "Liberation Mono", monospace;
+
+  --text-2xs: 10px;
+  --text-xs: 11px;
+  --text-sm: 12.5px;
+  --text-md: 13.5px;
+  --text-lg: 15px;
+  --text-xl: 18px;
+  --text-2xl: 24px;
+
+  --track-caps: 0.09em;
+
+  /* radii */
+  --r-xs: 4px;
+  --r-sm: 7px;
+  --r-md: 11px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-full: 9999px;
+
+  /* spacing (4px grid) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 40px;
+  --sp-9: 56px;
+
+  /* motion — every duration is scaled by --motion (see motion.css) */
+  --motion: 1;
+  --ease: cubic-bezier(0.33, 1, 0.5, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-1: calc(110ms * var(--motion));
+  --dur-2: calc(170ms * var(--motion));
+  --dur-3: calc(260ms * var(--motion));
+  --dur-4: calc(420ms * var(--motion));
+  --dur-5: calc(700ms * var(--motion));
+  --dur-spin: 0.9s; /* functional motion — never scaled to zero */
+
+  /* chrome */
+  --topbar-h: 44px;
+  --traffic-w: 76px; /* room for macOS traffic lights under titleBarStyle: Overlay */
+  --sidebar-min: 180px;
+  --row-h: 44px;
+  --hair-w: 1px;
+
+  /* layers */
+  --z-resizer: 5;
+  --z-sticky: 10;
+  --z-topbar: 50;
+  --z-menu: 1100;
+  --z-overlay: 1000;
+  --z-toast: 1200;
+  --z-tooltip: 2147483647;
+}

@@ -1,0 +1,56 @@
+% {{FOLDER}}/main.tex — {{TITLE}}
+% texref · minimal template · created {{CREATED}}
+% Build: make · make launch (Skim watch) · make name NAME=<pdf> · make archive TAG=<tag>
+% =====================================================================================================================
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+{{INCLUDE:packages}}
+\usepackage{xltabular}
+{{INCLUDE:tables}}
+{{INCLUDE:code}}
+
+% ---------------------------------------------------------------- document metadata (edit here)
+\newcommand{\doctitle}{{{TITLE}}}
+\newcommand{\docauthor}{{{AUTHOR}}}
+\newcommand{\docdate}{{{DATE}}}
+\newcommand{\docversion}{{{VERSION}}}
+
+% ---------------------------------------------------------------- headings
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection\quad}{0pt}{}
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection\quad}{0pt}{}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+\newcommand{\startappendices}{%
+  \appendix
+  \titleformat{\section}[display]{\normalfont\large\bfseries}{Appendix~\thesection}{2pt}{\large}
+}
+
+{{INCLUDE:macros}}
+{{INCLUDE:bib}}
+{{INCLUDE:hyperref}}
+
+\begin{document}
+
+% =====================================================================================================================
+\noindent{\LARGE\bfseries \doctitle\par}
+\vspace{4pt}
+\noindent{\normalsize \docauthor \quad\textperiodcentered\quad \docdate \quad\textperiodcentered\quad version \docversion\par}
+\vspace{6pt}
+{\color{hair}\hrule height 0.3pt}
+\vspace{10pt}
+
+% =====================================================================================================================
+% >>> texref:units  (managed by tex-add / tex-rm — edit order here if you must, keep the markers)
+{{UNIT_INPUTS}}
+% <<< texref:units
+
+% =====================================================================================================================
+\startappendices
+% >>> texref:appendices
+{{APPENDIX_INPUTS}}
+% <<< texref:appendices
+
+% =====================================================================================================================
+\printbibliography
+
+\end{document}

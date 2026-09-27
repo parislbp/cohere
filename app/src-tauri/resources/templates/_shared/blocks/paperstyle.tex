@@ -1,0 +1,97 @@
+% ---------------------------------------------------------------- paper style
+% The house paper look: warm sheet, default Computer Modern text and headings, hairline section rules with the
+% number in accent, a paneled abstract, framed figures, accent-bordered pull quotes, a faded version foot.
+% No font packages are loaded, so the text matches the other house templates; add them here if wanted.
+\usepackage{etoolbox}
+\usepackage{lettrine}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+
+% ---- palette (hair and paper come from the tables block) ------------------------------------------------------------
+\definecolor{sheet}{HTML}{FBFAF7}      % page
+\definecolor{ink}{HTML}{1A1A1A}
+\definecolor{ink2}{HTML}{3D3B38}
+\definecolor{ink3}{HTML}{6E6A63}
+\definecolor{ink4}{HTML}{A39E94}
+\definecolor{hairtwo}{HTML}{E3DFD6}
+\definecolor{accent}{HTML}{1F4E79}
+\definecolor{accentsoft}{HTML}{DCE6F1}
+\pagecolor{sheet}                      % comment out for a white page
+\color{ink}
+
+% ---- tables: roman body, small sans uppercase headers, heavier top/bottom rules, hairlines between rows -----------
+\setlength{\heavyrulewidth}{0.9pt}
+\setlength{\lightrulewidth}{0.55pt}
+\renewcommand{\arraystretch}{1.22}
+\renewcommand{\thead}[1]{{\sffamily\bfseries\scriptsize\textls[70]{\MakeUppercase{#1}}}}
+\newenvironment{papertable}{\par\small}{\par}      % wrap a table to set it small
+\captionsetup{font={small},labelfont={bf},labelsep=period,justification=justified,skip=8pt}
+\captionsetup[table]{position=above,skip=8pt}
+
+% ---- headings: house roman bold, number in accent, hairline above a section unless it starts a page --------------
+% \secrule draws the hairline only when the section does not start a page (the running head already rules the top)
+% and unless \secrulefalse was issued just before (e.g. the first section under the abstract panel).
+\newif\ifsecrule \secruletrue
+\newcommand{\secrule}{\ifsecrule\ifdim\pagetotal>0pt {\color{hair}\titlerule[0.3pt]}\vspace{13pt}\fi\fi\global\secruletrue}
+\titleformat{\section}
+  {\secrule\color{ink}\normalfont\large\bfseries}
+  {\textcolor{accent}{\normalfont\normalsize\thesection}}{1.1em}{}
+\titlespacing*{\section}{0pt}{22pt}{6pt}
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries\color{ink}}
+  {\textcolor{accent}{\normalfont\normalsize\bfseries\thesubsection}}{0.75em}{}
+\titlespacing*{\subsection}{0pt}{12pt}{4pt}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\itshape\color{ink}}
+  {\textcolor{accent}{\normalfont\normalsize\thesubsubsection}}{0.75em}{}
+\titlespacing*{\subsubsection}{0pt}{9pt}{3pt}
+\newcommand{\startappendices}{%
+  \appendix
+  \titleformat{\section}[display]
+    {\secrule\color{ink}\normalfont\large\bfseries}
+    {\textcolor{accent}{\normalfont\normalsize Appendix~\thesection}}{2pt}{}
+  \titlespacing*{\section}{0pt}{22pt}{8pt}
+}
+% \deck{...} right after \section: an italic one-line standfirst.
+\newcommand{\deck}[1]{\vspace{-3pt}\noindent{\itshape\color{ink2}#1\par}\vspace{9pt}}
+% \lead{I}{t was the best of times}: two-line accent drop cap on the opening paragraph.
+\renewcommand{\LettrineFontHook}{\color{accent}}
+\renewcommand{\LettrineTextFont}{\normalfont}      % no small caps after the initial
+\newcommand{\lead}[2]{\lettrine[lines=2,lhang=0.04,findent=3pt,nindent=0pt]{#1}{#2}}
+
+% ---- panels -------------------------------------------------------------------------------------------------------
+\tcbset{paperpanel/.style={enhanced,breakable,sharp corners,frame hidden,boxrule=0pt,colback=paper,boxsep=0pt,
+                           left=14pt,right=14pt,top=11pt,bottom=12pt,before skip=10pt,after skip=14pt}}
+\newtcolorbox{summary}{paperpanel,borderline north={1.5pt}{0pt}{accent}}                 % abstract / executive summary
+\newtcolorbox{eqpanel}{enhanced,sharp corners,colback=paper,colframe=hair,boxrule=0.3pt,boxsep=0pt,
+                       left=10pt,right=10pt,top=8pt,bottom=8pt,before skip=10pt,after skip=10pt}
+\newtcolorbox{eqhero}{enhanced,sharp corners,colback=white,colframe=accent,boxrule=0.5pt,boxsep=0pt,
+                      left=10pt,right=10pt,top=10pt,bottom=10pt,before skip=12pt,after skip=12pt}
+\newtcolorbox{figframe}{enhanced,sharp corners,colback=white,colframe=hairtwo,boxrule=0.3pt,boxsep=0pt,
+                        left=6pt,right=6pt,top=8pt,bottom=4pt}
+\newtcolorbox{pullquote}{enhanced,blanker,breakable,borderline west={1.5pt}{0pt}{accent},boxsep=0pt,
+                         left=12pt,top=2pt,bottom=2pt,before skip=8pt,after skip=8pt}
+% \panelhead{Abstract}: small-caps accent label at the top of a panel.
+\newcommand{\panelhead}[1]{{\sffamily\bfseries\scriptsize\color{accent}\textls[180]{\MakeUppercase{#1}}\par}\vspace{7pt}}
+% \readingguide{...}: hairline, then a labelled guide line, inside the summary panel.
+\newcommand{\readingguide}[1]{\par\vspace{9pt}{\color{hair}\hrule height 0.3pt}\vspace{8pt}%
+  {\small\color{ink2}{\sffamily\bfseries\scriptsize\textls[90]{READING GUIDE}}\ \ #1\par}}
+% \eqnote{...}: a small line under an equation in a panel (number, units, a gloss).
+\newcommand{\eqnote}[1]{\par\vspace{5pt}{\centering\footnotesize\color{ink3}#1\par}}
+% \pill{A} / \pillaccent{B}: rounded tags for short codes in tables.
+\newcommand{\pill}[1]{\tikz[baseline=(p.base)]\node[draw=hair,line width=0.3pt,rounded corners=5pt,inner xsep=4pt,inner ysep=1.6pt,font=\sffamily\bfseries\tiny,text=ink2](p){#1};}
+\newcommand{\pillaccent}[1]{\tikz[baseline=(p.base)]\node[draw=accent,line width=0.4pt,rounded corners=5pt,inner xsep=4pt,inner ysep=1.6pt,font=\sffamily\bfseries\tiny,text=accent](p){#1};}
+% \colophon{...}: hairline and a small muted closing note.
+\newcommand{\colophon}[1]{\par\vspace{22pt}{\color{hair}\hrule height 0.3pt}\vspace{8pt}{\footnotesize\color{ink3}#1\par}}
+
+% ---- running header (hairline, as in the other house templates) and faded version in the foot -----------------------
+\usepackage{fancyhdr}
+\setlength{\headheight}{22pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape\docshorttitle}
+\fancyhead[R]{\small\thepage}
+\fancyfoot[R]{\scriptsize\color{ink4}v\docversion}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{hair}\leaders\hrule height \headrulewidth\hfill}}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[R]{\scriptsize\color{ink4}v\docversion}\renewcommand{\headrulewidth}{0pt}}

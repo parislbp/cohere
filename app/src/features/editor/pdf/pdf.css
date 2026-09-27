@@ -1,0 +1,78 @@
+.pdf-viewer {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: var(--pdf-backdrop);
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pdf-viewer:focus {
+  outline: none;
+}
+
+.pdf-viewer:focus-visible {
+  outline: 2px solid var(--focus-ring, Highlight);
+  outline-offset: -2px;
+}
+
+/* `min-width: max-content` lets a page wider than the viewer scroll horizontally instead of being
+   centred off the left edge; padding and gap come from props as inline styles. */
+.pdf-pages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: content-box;
+  min-width: max-content;
+}
+
+.pdf-page {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  contain: layout paint;
+  background: white;
+  box-shadow: var(--pdf-page-shadow);
+  border-radius: 2px;
+}
+
+.pdf-page-canvas,
+.pdf-page canvas {
+  display: block;
+}
+
+.pdf-page.is-rendering::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%, var(--bg-2) 50%, transparent 100%);
+  background-size: 200% 100%;
+  opacity: 0.6;
+  animation: pdf-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes pdf-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+[data-motion="off"] .pdf-page.is-rendering::after {
+  animation: none;
+  background: var(--bg-2);
+  opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdf-page.is-rendering::after {
+    animation: none;
+    background: var(--bg-2);
+    opacity: 0.4;
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "key": "minimal",
+  "name": "Minimal",
+  "short_name": "Minimal",
+  "icon": "tplMinimal",
+  "description": "Blank canvas with the house table/equation styles: one-line title, numbered sections, references (article class)",
+  "documentclass": "article",
+  "unit": "section",
+  "unit_cmd": "section",
+  "sub_cmd": "subsection",
+  "unit_dir": "sections",
+  "unit_label": "sec",
+  "abstract": false,
+  "toc": false,
+  "appendices": true,
+  "twocolumn": false,
+  "defaults": {
+    "units": 2,
+    "subunits": 0,
+    "appendices": 0
+  },
+  "prompts": {
+    "subtitle": false,
+    "tagline": false
+  }
+}

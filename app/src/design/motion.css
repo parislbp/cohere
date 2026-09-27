@@ -1,0 +1,104 @@
+/* Motion scale. Every transition/animation in the app uses --dur-* so one attribute governs it all. */
+
+[data-motion="off"] {
+  --motion: 0;
+}
+[data-motion="slow"] {
+  --motion: 1.6;
+}
+[data-motion="normal"] {
+  --motion: 1;
+}
+[data-motion="fast"] {
+  --motion: 0.6;
+}
+
+/* With motion off, kill everything except functional spinners (which use --dur-spin). */
+[data-motion="off"] *,
+[data-motion="off"] *::before,
+[data-motion="off"] *::after {
+  transition-duration: 0s !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+}
+[data-motion="off"] .ch-icon--spin,
+[data-motion="off"] .spinner {
+  animation-duration: var(--dur-spin) !important;
+}
+
+@keyframes ch-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes ch-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes ch-sink {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes ch-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes ch-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ch-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+@keyframes ch-shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+.anim-fade {
+  animation: ch-fade-in var(--dur-2) var(--ease) both;
+}
+.anim-rise {
+  animation: ch-rise var(--dur-3) var(--ease) both;
+}
+.anim-sink {
+  animation: ch-sink var(--dur-2) var(--ease) both;
+}
+.anim-pop {
+  animation: ch-pop var(--dur-2) var(--ease) both;
+}
+.spinner {
+  animation: ch-spin var(--dur-spin) linear infinite;
+}

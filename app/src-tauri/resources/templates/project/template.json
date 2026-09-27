@@ -1,0 +1,26 @@
+{
+  "key": "project",
+  "name": "Project report",
+  "short_name": "Project",
+  "icon": "tplProject",
+  "description": "Title page, abstract + reading guide, contents, numbered chapters, appendices, bibliography (report class)",
+  "documentclass": "report",
+  "unit": "chapter",
+  "unit_cmd": "chapter",
+  "sub_cmd": "section",
+  "unit_dir": "chapters",
+  "unit_label": "ch",
+  "abstract": true,
+  "toc": true,
+  "appendices": true,
+  "twocolumn": false,
+  "defaults": {
+    "units": 3,
+    "subunits": 2,
+    "appendices": 1
+  },
+  "prompts": {
+    "subtitle": true,
+    "tagline": true
+  }
+}

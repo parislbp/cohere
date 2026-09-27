@@ -1,0 +1,26 @@
+{
+  "key": "paper-single",
+  "name": "Paper (one column)",
+  "short_name": "Paper, 1-column",
+  "icon": "tplPaper1",
+  "description": "House paper style in one column: warm sheet, paneled abstract, hairline sections with accent numbers that can each start a page, framed figures, faded version foot (article class, 11pt)",
+  "documentclass": "article",
+  "unit": "section",
+  "unit_cmd": "section",
+  "sub_cmd": "subsection",
+  "unit_dir": "sections",
+  "unit_label": "sec",
+  "abstract": true,
+  "toc": false,
+  "appendices": true,
+  "twocolumn": false,
+  "defaults": {
+    "units": 5,
+    "subunits": 2,
+    "appendices": 0
+  },
+  "prompts": {
+    "subtitle": true,
+    "tagline": true
+  }
+}

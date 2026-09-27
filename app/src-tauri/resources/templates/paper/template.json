@@ -1,0 +1,26 @@
+{
+  "key": "paper",
+  "name": "Paper (two columns)",
+  "short_name": "Paper, 2-column",
+  "icon": "tplPaper2",
+  "description": "House paper style in two columns: warm sheet, paneled abstract spanning both columns, hairline sections with accent numbers, framed figures, faded version foot (article class, 10pt)",
+  "documentclass": "article",
+  "unit": "section",
+  "unit_cmd": "section",
+  "sub_cmd": "subsection",
+  "unit_dir": "sections",
+  "unit_label": "sec",
+  "abstract": true,
+  "toc": false,
+  "appendices": true,
+  "twocolumn": true,
+  "defaults": {
+    "units": 5,
+    "subunits": 2,
+    "appendices": 0
+  },
+  "prompts": {
+    "subtitle": true,
+    "tagline": true
+  }
+}

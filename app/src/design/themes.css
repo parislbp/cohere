@@ -1,0 +1,453 @@
+/* Cohere themes — 2 light (paper, mist) · 2 dark (ink, graphite).
+   One ink colour in opacity tiers, one accent hue per theme, gradients that vary only lightness/opacity. */
+
+/* ───────────────────────────── paper — warm white · ink · teal ───────────────────────────── */
+:root,
+[data-theme="paper"] {
+  color-scheme: light;
+  --bg-0: #ebe7de;
+  --bg-1: #f4f1ea;
+  --bg-2: #faf8f3;
+  --bg-3: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.42);
+  --bg-overlay: rgba(40, 36, 30, 0.34);
+
+  --ink-rgb: 28, 27, 24;
+  --ink-1: rgba(28, 27, 24, 0.92);
+  --ink-2: rgba(28, 27, 24, 0.66);
+  --ink-3: rgba(28, 27, 24, 0.46);
+  --ink-4: rgba(28, 27, 24, 0.26);
+
+  --hair: rgba(28, 27, 24, 0.1);
+  --hair-2: rgba(28, 27, 24, 0.18);
+  --bevel-hi: rgba(255, 255, 255, 0.75);
+  --shadow-1: 0 1px 2px rgba(28, 27, 24, 0.06), 0 2px 8px rgba(28, 27, 24, 0.05);
+  --shadow-2: 0 4px 14px rgba(28, 27, 24, 0.1), 0 1px 3px rgba(28, 27, 24, 0.06);
+  --shadow-3: 0 18px 48px rgba(28, 27, 24, 0.18), 0 2px 8px rgba(28, 27, 24, 0.08);
+
+  --accent: #14646b;
+  --accent-2: #2a8189;
+  --accent-3: #0e484e;
+  --accent-ink: #f7f5ef;
+  --accent-glow: rgba(20, 100, 107, 0.2);
+  --accent-soft: rgba(20, 100, 107, 0.09);
+  --accent-softer: rgba(20, 100, 107, 0.05);
+
+  --grad-title: linear-gradient(135deg, rgba(14, 72, 78, 0.98) 0%, rgba(20, 100, 107, 0.74) 52%, rgba(42, 129, 137, 0.92) 100%);
+  --grad-accent: linear-gradient(160deg, #1c777e 0%, #14646b 55%, #0f5157 100%);
+  --grad-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 60%);
+  --grad-backdrop:
+    radial-gradient(ellipse 70% 50% at 18% 8%, rgba(20, 100, 107, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 88% 90%, rgba(20, 100, 107, 0.05) 0%, transparent 55%);
+
+  --ok: #2f8f5b;
+  --warn: #b8860b;
+  --err: #b8443a;
+  --info: #3b6fa8;
+  --ok-soft: rgba(47, 143, 91, 0.12);
+  --warn-soft: rgba(184, 134, 11, 0.13);
+  --err-soft: rgba(184, 68, 58, 0.12);
+  --info-soft: rgba(59, 111, 168, 0.12);
+
+  --sel: rgba(20, 100, 107, 0.16);
+  --focus-ring: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
+  --scroll-thumb: rgba(28, 27, 24, 0.18);
+
+  --pdf-backdrop: #ddd8cc;
+  --pdf-page-shadow: 0 1px 2px rgba(28, 27, 24, 0.1), 0 10px 28px rgba(28, 27, 24, 0.16);
+
+  --syn-text: #1c1b18;
+  --syn-comment: #8a857a;
+  --syn-command: #14646b;
+  --syn-keyword: #6d3f9e;
+  --syn-sectioning: #8c3b2f;
+  --syn-env: #2a6e9e;
+  --syn-math: #6b4a1a;
+  --syn-math-delim: #a8631a;
+  --syn-math-command: #8a5a10;
+  --syn-ref: #2e7d5b;
+  --syn-string: #5b6b7a;
+  --syn-option: #7b6e60;
+  --syn-brace: #6b655b;
+  --syn-special: #b0573f;
+  --syn-number: #3f6ea6;
+  --syn-verbatim: #556070;
+
+  --diag-error: #c0392b;
+  --diag-warning: #c58a12;
+  --diag-info: #4a78b0;
+
+  --editor-bg: #faf8f3;
+  --editor-gutter: #f4f1ea;
+  --editor-active-line: rgba(28, 27, 24, 0.035);
+  --editor-cursor: #14646b;
+  --editor-match: rgba(20, 100, 107, 0.18);
+
+  --a1: #7a3b3b;
+  --a1-light: #a86464;
+  --a1-dark: #5a2a2a;
+  --a1-soft: rgba(122, 59, 59, 0.14);
+  --a1-grad: linear-gradient(160deg, #a86464 0%, #7a3b3b 55%, #5a2a2a 100%);
+  --a2: #8a4a2b;
+  --a2-light: #b5764f;
+  --a2-dark: #63321c;
+  --a2-soft: rgba(138, 74, 43, 0.14);
+  --a2-grad: linear-gradient(160deg, #b5764f 0%, #8a4a2b 55%, #63321c 100%);
+  --a3: #9a7a2a;
+  --a3-light: #c4a24a;
+  --a3-dark: #6f5619;
+  --a3-soft: rgba(154, 122, 42, 0.14);
+  --a3-grad: linear-gradient(160deg, #c4a24a 0%, #9a7a2a 55%, #6f5619 100%);
+  --a4: #7d6a4f;
+  --a4-light: #a8957a;
+  --a4-dark: #5a4a34;
+  --a4-soft: rgba(125, 106, 79, 0.14);
+  --a4-grad: linear-gradient(160deg, #a8957a 0%, #7d6a4f 55%, #5a4a34 100%);
+  --a5: #5f2f45;
+  --a5-light: #8b5670;
+  --a5-dark: #41202f;
+  --a5-soft: rgba(95, 47, 69, 0.14);
+  --a5-grad: linear-gradient(160deg, #8b5670 0%, #5f2f45 55%, #41202f 100%);
+  --light-close: #5a4a34;
+  --light-min: #a8957a;
+  --light-max: #d8cdb8;
+  --light-glyph: #f4f1ea;
+}
+
+/* ───────────────────────────── mist — cool grey · slate blue ─────────────────────────────── */
+[data-theme="mist"] {
+  color-scheme: light;
+  --bg-0: #e3e7ec;
+  --bg-1: #eef1f5;
+  --bg-2: #f6f8fb;
+  --bg-3: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.46);
+  --bg-overlay: rgba(30, 36, 46, 0.34);
+
+  --ink-rgb: 22, 26, 33;
+  --ink-1: rgba(22, 26, 33, 0.92);
+  --ink-2: rgba(22, 26, 33, 0.66);
+  --ink-3: rgba(22, 26, 33, 0.46);
+  --ink-4: rgba(22, 26, 33, 0.26);
+
+  --hair: rgba(22, 26, 33, 0.1);
+  --hair-2: rgba(22, 26, 33, 0.18);
+  --bevel-hi: rgba(255, 255, 255, 0.8);
+  --shadow-1: 0 1px 2px rgba(22, 26, 33, 0.06), 0 2px 8px rgba(22, 26, 33, 0.05);
+  --shadow-2: 0 4px 14px rgba(22, 26, 33, 0.1), 0 1px 3px rgba(22, 26, 33, 0.06);
+  --shadow-3: 0 18px 48px rgba(22, 26, 33, 0.18), 0 2px 8px rgba(22, 26, 33, 0.08);
+
+  --accent: #3f6386;
+  --accent-2: #5a7fa3;
+  --accent-3: #2c4a68;
+  --accent-ink: #f4f7fb;
+  --accent-glow: rgba(63, 99, 134, 0.2);
+  --accent-soft: rgba(63, 99, 134, 0.1);
+  --accent-softer: rgba(63, 99, 134, 0.05);
+
+  --grad-title: linear-gradient(135deg, rgba(44, 74, 104, 0.98) 0%, rgba(63, 99, 134, 0.74) 52%, rgba(90, 127, 163, 0.92) 100%);
+  --grad-accent: linear-gradient(160deg, #4b7196 0%, #3f6386 55%, #34536f 100%);
+  --grad-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 60%);
+  --grad-backdrop:
+    radial-gradient(ellipse 70% 50% at 18% 8%, rgba(63, 99, 134, 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 88% 90%, rgba(63, 99, 134, 0.05) 0%, transparent 55%);
+
+  --ok: #2f8a63;
+  --warn: #a97c0c;
+  --err: #b3403c;
+  --info: #3d6db0;
+  --ok-soft: rgba(47, 138, 99, 0.12);
+  --warn-soft: rgba(169, 124, 12, 0.13);
+  --err-soft: rgba(179, 64, 60, 0.12);
+  --info-soft: rgba(61, 109, 176, 0.12);
+
+  --sel: rgba(63, 99, 134, 0.16);
+  --focus-ring: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
+  --scroll-thumb: rgba(22, 26, 33, 0.18);
+
+  --pdf-backdrop: #d6dbe2;
+  --pdf-page-shadow: 0 1px 2px rgba(22, 26, 33, 0.1), 0 10px 28px rgba(22, 26, 33, 0.16);
+
+  --syn-text: #161a21;
+  --syn-comment: #858c96;
+  --syn-command: #3f6386;
+  --syn-keyword: #7a4ea3;
+  --syn-sectioning: #9a3e5a;
+  --syn-env: #2b7a8c;
+  --syn-math: #6f5324;
+  --syn-math-delim: #a66a1e;
+  --syn-math-command: #86611a;
+  --syn-ref: #2f7f66;
+  --syn-string: #607080;
+  --syn-option: #77706a;
+  --syn-brace: #6a6f78;
+  --syn-special: #b05a4a;
+  --syn-number: #3f6ea6;
+  --syn-verbatim: #566270;
+
+  --diag-error: #c0392b;
+  --diag-warning: #c08a10;
+  --diag-info: #4a78b0;
+
+  --editor-bg: #f6f8fb;
+  --editor-gutter: #eef1f5;
+  --editor-active-line: rgba(22, 26, 33, 0.035);
+  --editor-cursor: #3f6386;
+  --editor-match: rgba(63, 99, 134, 0.18);
+
+  --a1: #3f8f8a;
+  --a1-light: #7fbcb7;
+  --a1-dark: #2c6a66;
+  --a1-soft: rgba(63, 143, 138, 0.14);
+  --a1-grad: linear-gradient(160deg, #7fbcb7 0%, #3f8f8a 55%, #2c6a66 100%);
+  --a2: #4a8c6e;
+  --a2-light: #86b9a3;
+  --a2-dark: #356951;
+  --a2-soft: rgba(74, 140, 110, 0.14);
+  --a2-grad: linear-gradient(160deg, #86b9a3 0%, #4a8c6e 55%, #356951 100%);
+  --a3: #8b7ab5;
+  --a3-light: #b6aad3;
+  --a3-dark: #65569a;
+  --a3-soft: rgba(139, 122, 181, 0.14);
+  --a3-grad: linear-gradient(160deg, #b6aad3 0%, #8b7ab5 55%, #65569a 100%);
+  --a4: #b06f8e;
+  --a4-light: #d1a3b8;
+  --a4-dark: #87506b;
+  --a4-soft: rgba(176, 111, 142, 0.14);
+  --a4-grad: linear-gradient(160deg, #d1a3b8 0%, #b06f8e 55%, #87506b 100%);
+  --a5: #6b6db2;
+  --a5-light: #9fa0d0;
+  --a5-dark: #4e5090;
+  --a5-soft: rgba(107, 109, 178, 0.14);
+  --a5-grad: linear-gradient(160deg, #9fa0d0 0%, #6b6db2 55%, #4e5090 100%);
+  --light-close: #4e5090;
+  --light-min: #8b7ab5;
+  --light-max: #b6aad3;
+  --light-glyph: #eef1f5;
+}
+
+/* ───────────────────────────── ink — warm black · cream · brass ───────────────────────────── */
+[data-theme="ink"] {
+  color-scheme: dark;
+  --bg-0: #0e0e0c;
+  --bg-1: #151411;
+  --bg-2: #1c1b17;
+  --bg-3: #25231e;
+  --bg-glass: rgba(255, 250, 240, 0.04);
+  --bg-overlay: rgba(6, 6, 5, 0.6);
+
+  --ink-rgb: 246, 241, 232;
+  --ink-1: rgba(246, 241, 232, 0.94);
+  --ink-2: rgba(246, 241, 232, 0.7);
+  --ink-3: rgba(246, 241, 232, 0.48);
+  --ink-4: rgba(246, 241, 232, 0.26);
+
+  --hair: rgba(246, 241, 232, 0.08);
+  --hair-2: rgba(246, 241, 232, 0.16);
+  --bevel-hi: rgba(255, 255, 255, 0.07);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-2: 0 4px 14px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-3: 0 18px 48px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
+
+  --accent: #d9b98c;
+  --accent-2: #ebcfa5;
+  --accent-3: #b8976b;
+  --accent-ink: #1a1712;
+  --accent-glow: rgba(217, 185, 140, 0.18);
+  --accent-soft: rgba(217, 185, 140, 0.1);
+  --accent-softer: rgba(217, 185, 140, 0.05);
+
+  --grad-title: linear-gradient(135deg, rgba(235, 207, 165, 0.98) 0%, rgba(217, 185, 140, 0.7) 52%, rgba(200, 170, 128, 0.95) 100%);
+  --grad-accent: linear-gradient(160deg, #e6c69a 0%, #d9b98c 55%, #c4a578 100%);
+  --grad-surface: linear-gradient(180deg, rgba(255, 250, 240, 0.05), rgba(255, 250, 240, 0) 60%);
+  --grad-backdrop:
+    radial-gradient(ellipse 70% 50% at 18% 8%, rgba(217, 185, 140, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 88% 90%, rgba(217, 185, 140, 0.04) 0%, transparent 55%),
+    linear-gradient(175deg, rgba(20, 19, 16, 0.6), rgba(14, 14, 12, 0.6));
+
+  --ok: #86cea7;
+  --warn: #edca80;
+  --err: #ed7f7f;
+  --info: #80aedd;
+  --ok-soft: rgba(134, 206, 167, 0.14);
+  --warn-soft: rgba(237, 202, 128, 0.14);
+  --err-soft: rgba(237, 127, 127, 0.14);
+  --info-soft: rgba(128, 174, 221, 0.14);
+
+  --sel: rgba(217, 185, 140, 0.22);
+  --focus-ring: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
+  --scroll-thumb: rgba(246, 241, 232, 0.16);
+
+  --pdf-backdrop: #0b0b0a;
+  --pdf-page-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 12px 32px rgba(0, 0, 0, 0.6);
+
+  --syn-text: #ede7da;
+  --syn-comment: #7e786c;
+  --syn-command: #d9b98c;
+  --syn-keyword: #c79be0;
+  --syn-sectioning: #e8a08a;
+  --syn-env: #86b9d9;
+  --syn-math: #e0c58f;
+  --syn-math-delim: #f0d5a0;
+  --syn-math-command: #d8a860;
+  --syn-ref: #9cd0b0;
+  --syn-string: #a9b4be;
+  --syn-option: #a99e90;
+  --syn-brace: #9e978b;
+  --syn-special: #e39a7a;
+  --syn-number: #8fb4e0;
+  --syn-verbatim: #b3b8be;
+
+  --diag-error: #ef7b7b;
+  --diag-warning: #ecc27a;
+  --diag-info: #85b2e0;
+
+  --editor-bg: #1a1916;
+  --editor-gutter: #151411;
+  --editor-active-line: rgba(246, 241, 232, 0.04);
+  --editor-cursor: #ebcfa5;
+  --editor-match: rgba(217, 185, 140, 0.22);
+
+  --a1: #d9b98c;
+  --a1-light: #ebcfa5;
+  --a1-dark: #b8976b;
+  --a1-soft: rgba(217, 185, 140, 0.14);
+  --a1-grad: linear-gradient(160deg, #ebcfa5 0%, #d9b98c 55%, #b8976b 100%);
+  --a2: #c88a7a;
+  --a2-light: #e0ada0;
+  --a2-dark: #a56a5c;
+  --a2-soft: rgba(200, 138, 122, 0.14);
+  --a2-grad: linear-gradient(160deg, #e0ada0 0%, #c88a7a 55%, #a56a5c 100%);
+  --a3: #a9b47a;
+  --a3-light: #c6cf9e;
+  --a3-dark: #86905c;
+  --a3-soft: rgba(169, 180, 122, 0.14);
+  --a3-grad: linear-gradient(160deg, #c6cf9e 0%, #a9b47a 55%, #86905c 100%);
+  --a4: #c9a8c8;
+  --a4-light: #dfc7de;
+  --a4-dark: #a6859f;
+  --a4-soft: rgba(201, 168, 200, 0.14);
+  --a4-grad: linear-gradient(160deg, #dfc7de 0%, #c9a8c8 55%, #a6859f 100%);
+  --a5: #8fa8b8;
+  --a5-light: #b3c6d1;
+  --a5-dark: #6f8797;
+  --a5-soft: rgba(143, 168, 184, 0.14);
+  --a5-grad: linear-gradient(160deg, #b3c6d1 0%, #8fa8b8 55%, #6f8797 100%);
+  --light-close: #ebcfa5;
+  --light-min: #c88a7a;
+  --light-max: #8fa8b8;
+  --light-glyph: #151411;
+}
+
+/* ───────────────────────────── graphite — cool black · silver · sea glass ───────────────── */
+[data-theme="graphite"] {
+  color-scheme: dark;
+  --bg-0: #0c0e11;
+  --bg-1: #12151a;
+  --bg-2: #191d24;
+  --bg-3: #21262f;
+  --bg-glass: rgba(240, 244, 250, 0.04);
+  --bg-overlay: rgba(4, 5, 7, 0.6);
+
+  --ink-rgb: 232, 236, 242;
+  --ink-1: rgba(232, 236, 242, 0.94);
+  --ink-2: rgba(232, 236, 242, 0.7);
+  --ink-3: rgba(232, 236, 242, 0.48);
+  --ink-4: rgba(232, 236, 242, 0.26);
+
+  --hair: rgba(232, 236, 242, 0.08);
+  --hair-2: rgba(232, 236, 242, 0.16);
+  --bevel-hi: rgba(255, 255, 255, 0.07);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-2: 0 4px 14px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-3: 0 18px 48px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
+
+  --accent: #86b9bf;
+  --accent-2: #a6d1d6;
+  --accent-3: #6a9ba1;
+  --accent-ink: #0f1417;
+  --accent-glow: rgba(134, 185, 191, 0.18);
+  --accent-soft: rgba(134, 185, 191, 0.1);
+  --accent-softer: rgba(134, 185, 191, 0.05);
+
+  --grad-title: linear-gradient(135deg, rgba(166, 209, 214, 0.98) 0%, rgba(134, 185, 191, 0.7) 52%, rgba(120, 170, 176, 0.95) 100%);
+  --grad-accent: linear-gradient(160deg, #98c7cc 0%, #86b9bf 55%, #74a8ae 100%);
+  --grad-surface: linear-gradient(180deg, rgba(240, 244, 250, 0.05), rgba(240, 244, 250, 0) 60%);
+  --grad-backdrop:
+    radial-gradient(ellipse 70% 50% at 18% 8%, rgba(134, 185, 191, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 88% 90%, rgba(134, 185, 191, 0.04) 0%, transparent 55%),
+    linear-gradient(175deg, rgba(16, 19, 24, 0.6), rgba(12, 14, 17, 0.6));
+
+  --ok: #8fd3ab;
+  --warn: #e9c682;
+  --err: #ee8484;
+  --info: #88b4e2;
+  --ok-soft: rgba(143, 211, 171, 0.14);
+  --warn-soft: rgba(233, 198, 130, 0.14);
+  --err-soft: rgba(238, 132, 132, 0.14);
+  --info-soft: rgba(136, 180, 226, 0.14);
+
+  --sel: rgba(134, 185, 191, 0.22);
+  --focus-ring: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
+  --scroll-thumb: rgba(232, 236, 242, 0.16);
+
+  --pdf-backdrop: #090b0e;
+  --pdf-page-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 12px 32px rgba(0, 0, 0, 0.6);
+
+  --syn-text: #e6eaef;
+  --syn-comment: #737b86;
+  --syn-command: #86b9bf;
+  --syn-keyword: #b39ddb;
+  --syn-sectioning: #e8a8a8;
+  --syn-env: #7fb0e0;
+  --syn-math: #d9c08a;
+  --syn-math-delim: #ead49e;
+  --syn-math-command: #d0a860;
+  --syn-ref: #9cd5b5;
+  --syn-string: #a8b3be;
+  --syn-option: #a39d96;
+  --syn-brace: #9aa1ab;
+  --syn-special: #e0977a;
+  --syn-number: #8fb8e8;
+  --syn-verbatim: #b1b8c1;
+
+  --diag-error: #ef7f7f;
+  --diag-warning: #e9c27a;
+  --diag-info: #88b4e2;
+
+  --editor-bg: #171b21;
+  --editor-gutter: #12151a;
+  --editor-active-line: rgba(232, 236, 242, 0.04);
+  --editor-cursor: #a6d1d6;
+  --editor-match: rgba(134, 185, 191, 0.22);
+
+  --a1: #86b9bf;
+  --a1-light: #a6d1d6;
+  --a1-dark: #6a9ba1;
+  --a1-soft: rgba(134, 185, 191, 0.14);
+  --a1-grad: linear-gradient(160deg, #a6d1d6 0%, #86b9bf 55%, #6a9ba1 100%);
+  --a2: #8fb8e8;
+  --a2-light: #b3cff0;
+  --a2-dark: #6f95c2;
+  --a2-soft: rgba(143, 184, 232, 0.14);
+  --a2-grad: linear-gradient(160deg, #b3cff0 0%, #8fb8e8 55%, #6f95c2 100%);
+  --a3: #b39ddb;
+  --a3-light: #cdbde8;
+  --a3-dark: #8f7ab8;
+  --a3-soft: rgba(179, 157, 219, 0.14);
+  --a3-grad: linear-gradient(160deg, #cdbde8 0%, #b39ddb 55%, #8f7ab8 100%);
+  --a4: #9cd5b5;
+  --a4-light: #bce4cc;
+  --a4-dark: #7ab095;
+  --a4-soft: rgba(156, 213, 181, 0.14);
+  --a4-grad: linear-gradient(160deg, #bce4cc 0%, #9cd5b5 55%, #7ab095 100%);
+  --a5: #e0a888;
+  --a5-light: #ecc4ad;
+  --a5-dark: #ba876c;
+  --a5-soft: rgba(224, 168, 136, 0.14);
+  --a5-grad: linear-gradient(160deg, #ecc4ad 0%, #e0a888 55%, #ba876c 100%);
+  --light-close: #a6d1d6;
+  --light-min: #b39ddb;
+  --light-max: #8fb8e8;
+  --light-glyph: #12151a;
+}

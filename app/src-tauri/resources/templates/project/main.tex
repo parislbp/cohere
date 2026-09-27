@@ -1,0 +1,92 @@
+% {{FOLDER}}/main.tex — {{TITLE}}
+% texref · project template · created {{CREATED}}
+% Build: make · make launch (Skim watch) · make name NAME=<pdf> · make archive TAG=<tag>
+% =====================================================================================================================
+\documentclass[11pt,letterpaper]{report}
+\usepackage[margin=1in]{geometry}
+{{INCLUDE:packages}}
+\usepackage{xltabular}
+{{INCLUDE:tables}}
+{{INCLUDE:code}}
+
+% ---------------------------------------------------------------- document metadata (edit here)
+\newcommand{\doctitle}{{{TITLE}}}
+\newcommand{\docsubtitle}{{{SUBTITLE}}}
+\newcommand{\doctagline}{{{TAGLINE}}}
+\newcommand{\docauthor}{{{AUTHOR}}}
+\newcommand{\docdate}{{{DATE}}}
+\newcommand{\docversion}{{{VERSION}}}
+% Foot of the title page, right below the date. Extend with \quad\textperiodcentered\quad, e.g.
+%   version \docversion \quad\textperiodcentered\quad inputs book v0.3.2 \quad\textperiodcentered\quad supersedes v0.1.0
+\newcommand{\docfootline}{version \docversion}
+
+% ---------------------------------------------------------------- chapter/section styling
+\usepackage[titles]{tocloft}
+\titleformat{\chapter}[hang]{\normalfont\LARGE\bfseries}{\thechapter\quad}{0pt}{}
+\titlespacing*{\chapter}{0pt}{0pt}{18pt}
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection\quad}{0pt}{}
+\titlespacing*{\section}{0pt}{14pt}{6pt}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection\quad}{0pt}{}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+% Appendices print "Appendix A" on its own line with the (optional) name beneath; the TOC reads "Appendix A" too.
+\newcommand{\startappendices}{%
+  \appendix
+  \titleformat{\chapter}[display]{\normalfont\LARGE\bfseries}{Appendix~\thechapter}{4pt}{\Large}
+  \titlespacing*{\chapter}{0pt}{0pt}{18pt}
+  \addtocontents{toc}{\protect\renewcommand{\protect\cftchappresnum}{Appendix~}\protect\setlength{\protect\cftchapnumwidth}{6.8em}}%
+}
+
+% ---------------------------------------------------------------- theorems
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{assumption}{Assumption}[chapter]
+
+{{INCLUDE:macros}}
+{{INCLUDE:bib}}
+{{INCLUDE:hyperref}}
+
+\begin{document}
+
+% =====================================================================================================================
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries \doctitle\par}
+\vspace{10pt}
+{\Large \docsubtitle\par}
+\vspace{6pt}
+{\large \doctagline\par}
+\vspace{3cm}
+{\large \docauthor\par}
+\vfill
+{\normalsize \docdate\par}
+\vspace{4pt}
+{\small \docfootline\par}
+\end{titlepage}
+
+% =====================================================================================================================
+\clearpage
+\thispagestyle{plain}
+\input{{{UNIT_DIR}}/abstract}
+
+% =====================================================================================================================
+\clearpage
+\pagestyle{plain}
+\tableofcontents
+
+% =====================================================================================================================
+% >>> texref:units  (managed by tex-add / tex-rm — edit order here if you must, keep the markers)
+{{UNIT_INPUTS}}
+% <<< texref:units
+
+% =====================================================================================================================
+\startappendices
+% >>> texref:appendices
+{{APPENDIX_INPUTS}}
+% <<< texref:appendices
+
+% =====================================================================================================================
+\clearpage
+\printbibliography[heading=bibintoc]
+
+\end{document}

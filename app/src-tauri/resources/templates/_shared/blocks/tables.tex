@@ -1,0 +1,12 @@
+% ---------------------------------------------------------------- tables
+% Hairline rules in a warm grey, generous row height, bold small headers.
+%   L{width}  left-aligned fixed-width column      Y  left-aligned stretch column (tabularx/xltabular)
+%   \rs       hairline separator between body rows  \thead{..}  header cell
+\usepackage{booktabs,tabularx,array,multirow,colortbl}
+\definecolor{hair}{HTML}{C9C4B8}
+\definecolor{paper}{HTML}{F4F2EE}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\rs}{\arrayrulecolor{hair}\specialrule{0.3pt}{0pt}{0pt}\arrayrulecolor{black}}
+\renewcommand{\arraystretch}{1.28}
+\newcommand{\thead}[1]{\textbf{\small #1}}

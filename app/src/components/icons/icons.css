@@ -1,0 +1,16 @@
+.ch-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+}
+
+.ch-icon--spin {
+  animation: ch-spin 0.9s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes ch-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

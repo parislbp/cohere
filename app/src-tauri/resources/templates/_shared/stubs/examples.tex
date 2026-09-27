@@ -1,0 +1,36 @@
+
+The remainder of this {{UNIT}} is a worked example of the house style---a table, an equation, a figure and a citation---to copy from and then delete. The conventions follow \cite{knuth1984}; the optimisation vocabulary follows \cite{boyd2004convex}.
+
+% ---- table: xltabular breaks across pages; header repeats; hairline \rs between body rows ------------------------
+{\small
+\begin{xltabular}{\textwidth}{@{}L{1.0cm} L{2.9cm} Y L{3.3cm}@{}}
+\caption{Example table. Fixed-width \code{L} columns for short cells, one stretch \code{Y} column for prose.}\label{tab:{{LABEL_SLUG}}-example}\\
+\toprule
+\thead{Kind} & \thead{Name} & \thead{Definition and test} & \thead{Home} \\\midrule
+\endfirsthead
+\toprule
+\thead{Kind} & \thead{Name} & \thead{Definition and test} & \thead{Home} \\\midrule
+\endhead
+\midrule\multicolumn{4}{r}{\footnotesize\itshape continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+\kind{S} & Settlement stream & A published price times a quantity the decision controls, settled on a defined clock. \emph{Test:} does the coefficient multiply a decision variable? & Objective \eqref{eq:{{LABEL_SLUG}}-example} \\\rs
+\kind{M} & Multiplier & A factor that scales what is paid or gates what may be offered. & Coefficients \\\rs
+\kind{C} & Constraint & A rule that shapes the feasible set and never pays. Its dual is the opportunity cost of relaxing it. & Constraints \\
+\end{xltabular}}
+
+% ---- equation ------------------------------------------------------------------------------------------------------
+\begin{equation}
+\label{eq:{{LABEL_SLUG}}-example}
+\max_{x\in\mathcal{X}}\quad \sum_{t\in\mathcal{T}}\lambda_t\,x_t\,\dt \;-\; c\sum_{t\in\mathcal{T}} x_t\,\dt
+\qquad\text{s.t.}\qquad 0\le x_t\le \bar{x}\quad\forall t .
+\end{equation}
+Reading \eqref{eq:{{LABEL_SLUG}}-example} term by term: revenue at price $\lambda_t$, a unit cost $c$, and a capacity bound $\bar x$. Table~\ref{tab:{{LABEL_SLUG}}-example} names the kind of each term.
+
+% ---- figure --------------------------------------------------------------------------------------------------------
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.55\textwidth]{example-image}
+\caption{Example figure. Place image files in \code{figures/}; \code{\textbackslash graphicspath} already points there.}
+\label{fig:{{LABEL_SLUG}}-example}
+\end{figure}

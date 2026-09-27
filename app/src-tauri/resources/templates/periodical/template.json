@@ -1,0 +1,26 @@
+{
+  "key": "periodical",
+  "name": "Periodical (two columns)",
+  "short_name": "Periodical",
+  "icon": "tplPeriodical",
+  "description": "Two-column article: spanning title block and abstract, numbered sections, appendices, references (article class, 10pt)",
+  "documentclass": "article",
+  "unit": "section",
+  "unit_cmd": "section",
+  "sub_cmd": "subsection",
+  "unit_dir": "sections",
+  "unit_label": "sec",
+  "abstract": true,
+  "toc": false,
+  "appendices": true,
+  "twocolumn": true,
+  "defaults": {
+    "units": 4,
+    "subunits": 1,
+    "appendices": 0
+  },
+  "prompts": {
+    "subtitle": true,
+    "tagline": false
+  }
+}

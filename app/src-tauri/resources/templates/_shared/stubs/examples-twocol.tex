@@ -1,0 +1,43 @@
+
+The remainder of this {{UNIT}} is a worked example of the house style in two columns---a column-width table, a full-width table, an equation, a figure and a citation---to copy from and then delete. The conventions follow \cite{knuth1984}; the optimisation vocabulary follows \cite{boyd2004convex}.
+
+% ---- column-width table (tabularx on \columnwidth; longtable/xltabular cannot be used in two-column mode) ----------
+\begin{table}[htbp]\centering\small
+\caption{Column-width table.}\label{tab:{{LABEL_SLUG}}-col}
+\begin{tabularx}{\columnwidth}{@{}L{0.9cm} Y@{}}
+\toprule
+\thead{Kind} & \thead{Definition} \\\midrule
+\kind{S} & A published price times a quantity the decision controls. \\\rs
+\kind{M} & A factor that scales what is paid. \\\rs
+\kind{C} & A rule that shapes the feasible set and never pays. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ---- equation ------------------------------------------------------------------------------------------------------
+\begin{equation}
+\label{eq:{{LABEL_SLUG}}-example}
+\max_{x\in\mathcal{X}}\ \sum_{t\in\mathcal{T}}(\lambda_t - c)\,x_t\,\dt
+\quad\text{s.t.}\quad 0\le x_t\le \bar{x}.
+\end{equation}
+Reading \eqref{eq:{{LABEL_SLUG}}-example} term by term: revenue at price $\lambda_t$, a unit cost $c$, and a capacity bound $\bar x$. Table~\ref{tab:{{LABEL_SLUG}}-col} names the kind of each term; Table~\ref{tab:{{LABEL_SLUG}}-wide} spans both columns.
+
+% ---- full-width table (table* floats to the top of the next page) --------------------------------------------------
+\begin{table*}[t]\centering\small
+\caption{Full-width table across both columns (\code{table*}).}\label{tab:{{LABEL_SLUG}}-wide}
+\begin{tabularx}{\textwidth}{@{}L{1.0cm} L{2.9cm} Y L{3.3cm}@{}}
+\toprule
+\thead{Kind} & \thead{Name} & \thead{Definition and test} & \thead{Home} \\\midrule
+\kind{S} & Settlement stream & A published price times a quantity the decision controls, settled on a defined clock. \emph{Test:} does the coefficient multiply a decision variable? & Objective \eqref{eq:{{LABEL_SLUG}}-example} \\\rs
+\kind{M} & Multiplier & A factor that scales what is paid or gates what may be offered. & Coefficients \\\rs
+\kind{C} & Constraint & A rule that shapes the feasible set and never pays. Its dual is the opportunity cost of relaxing it. & Constraints \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+% ---- figure --------------------------------------------------------------------------------------------------------
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.9\columnwidth]{example-image}
+\caption{Column-width figure. Use \code{figure*} for a two-column-wide figure.}
+\label{fig:{{LABEL_SLUG}}-example}
+\end{figure}

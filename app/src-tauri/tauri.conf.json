@@ -33,8 +33,11 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["dmg", "app"],
-    "category": "Productivity",
+    "targets": [
+      "dmg",
+      "app"
+    ],
+    "category": "public.app-category.productivity",
     "shortDescription": "A local-first LaTeX writing desk",
     "longDescription": "Cohere is a private, local-only LaTeX writing environment: a library of projects, templates, a syntax-aware editor with compile diagnostics, an integrated PDF view and versioned snapshots.",
     "icon": [
@@ -50,7 +53,31 @@
       "exceptionDomain": "",
       "frameworks": [],
       "providerShortName": null,
-      "signingIdentity": null
+      "signingIdentity": "Developer ID Application: PARIS LUIS BLAISDELL-PIJUAN (9X5P3Z4ZAQ)",
+      "dmg": {
+        "appPosition": {
+          "x": 180,
+          "y": 170
+        },
+        "applicationFolderPosition": {
+          "x": 480,
+          "y": 170
+        },
+        "windowSize": {
+          "width": 660,
+          "height": 400
+        }
+      }
+    },
+    "createUpdaterArtifacts": true,
+    "copyright": "© 2026 Paris LBP · MIT"
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/parislbp/cohere/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEI5NTc2ODM4NjI2RDE4MDEKUldRQkdHMWlPR2hYdWY1c0RSQ0QyeExseWVsYXJJcitQYXdZbFlmVjJhdTRRME5haGplaUJiYVMK"
     }
   }
 }

@@ -7,18 +7,20 @@ use crate::error::{AppError, Result};
 use crate::paths::Paths;
 use crate::settings::Settings;
 use crate::texbin::{self, TexInfo};
+use crate::texinstall::{self, Installer};
 
 pub struct AppState {
     pub paths: Paths,
     pub settings: Mutex<Settings>,
     pub tex: Mutex<Option<TexInfo>>,
     pub compiler: Arc<Compiler>,
+    pub tex_installer: Arc<Installer>,
 }
 
 impl AppState {
     pub fn new(paths: Paths) -> Self {
         let settings = Settings::load(&paths.settings_file());
-        AppState { paths, settings: Mutex::new(settings), tex: Mutex::new(None), compiler: Arc::new(Compiler::default()) }
+        AppState { paths, settings: Mutex::new(settings), tex: Mutex::new(None), compiler: Arc::new(Compiler::default()), tex_installer: Arc::new(Installer::default()) }
     }
 
     pub fn settings(&self) -> Result<Settings> {
@@ -45,7 +47,7 @@ impl AppState {
         let mut guard = self.tex.lock().map_err(|_| AppError::other("tex lock"))?;
         if force || guard.is_none() {
             let override_dir = self.settings()?.tex_bin_dir;
-            *guard = Some(texbin::locate(override_dir.as_deref()));
+            *guard = Some(texbin::locate(override_dir.as_deref(), texinstall::installed_bin(&self.paths.root)));
         }
         Ok(guard.clone().expect("set above"))
     }

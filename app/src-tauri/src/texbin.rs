@@ -52,11 +52,14 @@ fn from_path_env() -> Option<PathBuf> {
     None
 }
 
-/// Order: explicit override → MacTeX symlink dir → newest TeX Live → Homebrew → PATH.
-pub fn locate(override_dir: Option<&str>) -> TexInfo {
+/// Order: explicit override → Cohere's private install → MacTeX symlink dir → newest TeX Live → Homebrew → PATH.
+pub fn locate(override_dir: Option<&str>, private_bin: Option<PathBuf>) -> TexInfo {
     let mut candidates: Vec<(String, PathBuf)> = Vec::new();
     if let Some(o) = override_dir.filter(|s| !s.trim().is_empty()) {
         candidates.push(("settings".into(), PathBuf::from(o.trim())));
+    }
+    if let Some(p) = private_bin {
+        candidates.push(("Cohere".into(), p));
     }
     candidates.push(("MacTeX".into(), PathBuf::from("/Library/TeX/texbin")));
     for d in texlive_dirs() {
@@ -118,7 +121,7 @@ mod tests {
 
     #[test]
     fn locate_does_not_panic_and_reports_candidates() {
-        let info = locate(Some("/definitely/not/here"));
+        let info = locate(Some("/definitely/not/here"), None);
         assert!(!info.candidates.is_empty());
         assert!(info.candidates[0].contains("/definitely/not/here"));
     }

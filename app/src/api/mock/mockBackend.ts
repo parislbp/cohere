@@ -21,6 +21,8 @@ import type {
   Settings,
   TemplateInfo,
   TexInfo,
+  TexInstallEvent,
+  UpdateCheck,
   VersionInfo,
 } from "../types";
 import { cleanDiagnostics, engineFlag, errorDiagnostics, findBadCommand, latexLog, latexmkLines, pdfPages, unitTexFiles } from "./compileSim";
@@ -109,6 +111,12 @@ export interface MockOptions {
   latencyMs?: number;
   seed?: () => MockProject[];
   now?: () => Date;
+  /** Pretend no TeX is installed (also `?notex=1`). */
+  noTex?: boolean;
+  /** Offer this version as an available update (also `?update=0.9.0`). */
+  update?: string | null;
+  /** Speed factor for simulated long jobs (TeX install, update download); 1 = realistic-ish seconds. */
+  speed?: number;
 }
 
 export interface RecordedCall {
@@ -152,7 +160,7 @@ const TEX_INFO: TexInfo = {
 
 export function defaultSettings(): Settings {
   return {
-    version: 3,
+    version: 4,
     theme: "paper",
     motion: "normal",
     engine: "pdflatex",
@@ -163,6 +171,7 @@ export function defaultSettings(): Settings {
     autosaveMs: 800,
     tooltips: true,
     tooltipDelayMs: 350,
+    checkUpdates: true,
     editor: {
       fontSize: 11,
       fontFamily: "SF Mono, Menlo, Consolas, monospace",
@@ -219,8 +228,10 @@ export function normaliseSettings(input: unknown): Settings {
   const migratedFont = version < 2 ? 11 : editorIn.fontSize;
   const foldedIn = isRecord(o.ui) && Array.isArray(o.ui.sidebarFolded) && o.ui.sidebarFolded.length === 3 ? (o.ui.sidebarFolded.map((x) => x === true) as [boolean, boolean, boolean]) : d.ui.sidebarFolded;
   if (version < 3) foldedIn[2] = true;
+  const checkUpdates = version < 4 ? true : typeof o.checkUpdates === "boolean" ? o.checkUpdates : d.checkUpdates;
   return {
-    version: 3,
+    version: 4,
+    checkUpdates,
     theme: pick(o.theme, THEMES, d.theme),
     motion: pick(o.motion, MOTIONS, d.motion),
     engine: pick(o.engine, ENGINES, d.engine),
@@ -318,6 +329,12 @@ export class MockBackend {
   readonly calls: RecordedCall[] = [];
   settings: Settings;
   latencyMs: number;
+  noTex: boolean;
+  offeredUpdate: string | null;
+  private readonly speed: number;
+  private texInstalled = false;
+  private texInstallRunning = false;
+  private texInstallCancelled = false;
   private readonly now: () => Date;
   private readonly listeners = new Map<string, Set<number>>();
   private readonly jobs = new Map<string, CompileJob>();
@@ -328,9 +345,15 @@ export class MockBackend {
     this.now = options.now ?? (() => new Date());
     for (const p of (options.seed ?? seedProjects)()) this.projects.set(p.id, p);
     this.settings = loadPersistedSettings();
+    const q = typeof location === "undefined" ? null : new URLSearchParams(location.search);
+    this.noTex = options.noTex ?? q?.get("notex") === "1";
+    this.offeredUpdate = options.update ?? q?.get("update") ?? null;
+    this.speed = options.speed ?? 1;
     this.appInfo = {
       version: "0.1.0-mock",
       dataDir: MOCK_DATA_DIR,
+      identifier: "com.cohere.desk",
+      dev: false,
       tex: { ...TEX_INFO, candidates: [...TEX_INFO.candidates] },
       themes: [...THEMES],
       motions: [...MOTIONS],
@@ -350,6 +373,24 @@ export class MockBackend {
         return { ...this.appInfo, tex: this.texInfo(), themes: [...THEMES], motions: [...MOTIONS], engines: [...ENGINES] };
       case "detect_tex":
         return this.texInfo();
+      case "check_update":
+        return this.checkUpdate();
+      case "install_update":
+        return this.installUpdate();
+      case "install_tex":
+        return this.installTex();
+      case "cancel_tex_install":
+        this.texInstallCancelled = true;
+        return null;
+      case "remove_tex":
+        this.texInstalled = false;
+        return this.texInfo();
+      case "tex_install_status":
+        return { running: this.texInstallRunning, installedBin: this.texInstalled ? `${MOCK_DATA_DIR}/texlive/tl/bin/universal-darwin` : null, bytes: this.texInstalled ? 412_000_000 : 0 };
+      case "app_footprint":
+        return { dataDir: MOCK_DATA_DIR, dataBytes: 48_300_000 + (this.texInstalled ? 412_000_000 : 0), texBytes: this.texInstalled ? 412_000_000 : 0, projects: this.projects.size, appBundle: "/Applications/Cohere.app", libraryDirs: ["/Users/you/Library/WebKit/com.cohere.desk", "/Users/you/Library/Saved Application State/com.cohere.desk.savedState"] };
+      case "remove_cohere":
+        return { exported: args.exportDir ? this.projects.size : 0, trashed: [MOCK_DATA_DIR, "/Applications/Cohere.app"], skipped: [] };
       case "get_settings":
         return normaliseSettings(this.settings);
       case "save_settings":
@@ -512,7 +553,86 @@ export class MockBackend {
   private texInfo(): TexInfo {
     const tex = { ...TEX_INFO, candidates: [...TEX_INFO.candidates] };
     const override = this.settings.texBinDir;
+    if (this.texInstalled) return { ...tex, binDir: `${MOCK_DATA_DIR}/texlive/tl/bin/universal-darwin`, source: "Cohere", latexmkVersion: "Latexmk, John Collins, 7 Apr. 2024. Version 4.86a" };
+    if (this.noTex) return { found: false, binDir: null, source: "none", latexmkVersion: null, pdflatex: false, xelatex: false, lualatex: false, biber: false, bibtex: false, candidates: ["/Library/TeX/texbin", "/opt/homebrew/bin", "/usr/local/bin"] };
     return override ? { ...tex, binDir: override, source: "settings", candidates: [override, ...tex.candidates] } : tex;
+  }
+
+  // ── updates ──────────────────────────────────────────────────────────────────────────────
+
+  private checkUpdate(): UpdateCheck {
+    const current = this.appInfo.version;
+    if (!this.offeredUpdate) return { currentVersion: current, available: false, version: null, notes: null, date: null, disabled: null };
+    return {
+      currentVersion: current,
+      available: true,
+      version: this.offeredUpdate,
+      date: this.now().toISOString(),
+      disabled: null,
+      notes: `## Cohere ${this.offeredUpdate}\n\n- In-app updates: this dialog, signed downloads, install and relaunch\n- **Install TeX for Cohere** when no TeX Live is found\n- Settings › About › Remove Cohere…\n\n### Fixes\n\n- A compile no longer dies on 8-bit characters in \`\\typeout\`\n`,
+    };
+  }
+
+  private installUpdate(): null {
+    const total = 14_800_000;
+    const steps = 12;
+    let i = 0;
+    const tick = () => {
+      i += 1;
+      if (i <= steps) {
+        this.emit("update:progress", { phase: "downloading", downloaded: Math.round((total * i) / steps), total });
+        setTimeout(tick, 120 / this.speed);
+      } else if (i === steps + 1) {
+        this.emit("update:progress", { phase: "installing", downloaded: total, total });
+        setTimeout(tick, 600 / this.speed);
+      } else {
+        this.emit("update:progress", { phase: "restarting", downloaded: total, total });
+      }
+    };
+    setTimeout(tick, 80 / this.speed);
+    return null;
+  }
+
+  // ── TeX install (simulated) ───────────────────────────────────────────────────────────────
+
+  private installTex(): null {
+    if (this.texInstallRunning) throw conflict("a TeX installation is already running");
+    this.texInstallRunning = true;
+    this.texInstallCancelled = false;
+    const send = (e: TexInstallEvent) => this.emit("tex-install:event", e);
+    const phases: { phase: TexInstallEvent["phase"]; lines: string[] }[] = [
+      { phase: "download", lines: ["fetching install-tl from https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz", "unpacking the installer"] },
+      { phase: "install", lines: ["installing the TeX Live core (scheme-basic, this is the long step)", "Installing [0001/0123, time/total: ??:??/??:??]: hyphen-base [23k]", "Installing [0040/0123, time/total: 00:12/00:37]: latex [1234k]", "Installing [0090/0123, time/total: 00:28/00:37]: pdftex [890k]", "Installing [0123/0123, time/total: 00:37/00:37]: texlive-scripts [512k]", "running mktexlsr … done", "running fmtutil-sys --all … done"] },
+      { phase: "packages", lines: ["adding 55 packages", "[1/55, ??:??/??:??] install: latexmk [78k]", "[20/55, 00:05/00:14] install: pgf [4567k]", "[40/55, 00:10/00:14] install: tcolorbox [345k]", "[55/55, 00:14/00:14] install: biber [12345k]", "running mktexlsr … done"] },
+      { phase: "verify", lines: ["compiling a probe document with latexmk", "Latexmk: applying rule 'pdflatex'...", "Latexmk: All targets (probe.pdf) are up-to-date"] },
+    ];
+    let pi = 0;
+    let li = 0;
+    const step = () => {
+      if (this.texInstallCancelled) {
+        this.texInstallRunning = false;
+        send({ phase: "cancelled", line: "installation cancelled", progress: null, binDir: null });
+        return;
+      }
+      const ph = phases[pi];
+      if (li < ph.lines.length) {
+        const line = ph.lines[li];
+        li += 1;
+        const m = /\[0*(\d+)\/0*(\d+)/.exec(line);
+        send({ phase: ph.phase, line, progress: m ? Number(m[1]) / Number(m[2]) : li === 1 ? 0 : null, binDir: null });
+        setTimeout(step, 180 / this.speed);
+      } else if (pi < phases.length - 1) {
+        pi += 1;
+        li = 0;
+        setTimeout(step, 120 / this.speed);
+      } else {
+        this.texInstallRunning = false;
+        this.texInstalled = true;
+        send({ phase: "done", line: "TeX for Cohere is ready", progress: 1, binDir: `${MOCK_DATA_DIR}/texlive/tl/bin/universal-darwin` });
+      }
+    };
+    setTimeout(step, 100 / this.speed);
+    return null;
   }
 
   private saveSettings(raw: unknown): Settings {

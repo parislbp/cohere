@@ -5,6 +5,11 @@ import { LibraryView } from "@/features/library/LibraryView";
 import { EditorView } from "@/features/editor/EditorView";
 import { SettingsDialog } from "@/features/settings/SettingsDialog";
 import { CommandPalette } from "@/features/palette/CommandPalette";
+import { UpdateDialog } from "@/features/updater/UpdateDialog";
+import { TexInstallDialog } from "@/features/tex/TexInstallDialog";
+import { useUpdaterStore } from "@/store/updater";
+import { useTexInstallStore } from "@/store/texInstall";
+import { toast } from "@/store/ui";
 import { matchesShortcut, SHORTCUTS } from "@/lib/keys";
 import { flushSettings, useSettingsStore } from "@/store/settings";
 import { useProjectStore } from "@/store/project";
@@ -24,6 +29,7 @@ export function App() {
   }, [load]);
 
   useGlobalShortcuts();
+  useLaunchChecks();
 
   useEffect(() => {
     const onHide = () => {
@@ -47,10 +53,36 @@ export function App() {
         <main className="shell__main">{loaded ? view === "editor" ? <EditorView /> : <LibraryView /> : <div className="shell__boot" />}</main>
       </div>
       <SettingsDialog />
+      <UpdateDialog />
+      <TexInstallDialog />
       <CommandPalette open={paletteOpen} onClose={() => setPalette(false)} />
       <Toasts />
     </TooltipProvider>
   );
+}
+
+/** Once settings and app info are in: a quiet update check (if allowed) and a nudge when no TeX is installed. */
+function useLaunchChecks() {
+  const loaded = useSettingsStore((s) => s.loaded);
+  useEffect(() => {
+    if (!loaded) return;
+    const { settings, appInfo } = useSettingsStore.getState();
+    const timers: number[] = [];
+    if (appInfo && !appInfo.tex.found) {
+      timers.push(
+        window.setTimeout(() => {
+          toast("No TeX installation found — compiling needs one.", "info", {
+            timeout: 12000,
+            action: { label: "Install TeX for Cohere", run: () => useTexInstallStore.getState().openDialog() },
+          });
+        }, 1200),
+      );
+    }
+    if (settings.checkUpdates && appInfo && !appInfo.dev) {
+      timers.push(window.setTimeout(() => void useUpdaterStore.getState().checkAtLaunch(), 2500));
+    }
+    return () => timers.forEach((t) => window.clearTimeout(t));
+  }, [loaded]);
 }
 
 function useGlobalShortcuts() {

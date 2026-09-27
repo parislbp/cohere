@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 use tauri::ipc::Response;
-use tauri::{AppHandle, State};
+use tauri::{AppHandle, Manager, State};
 
 use crate::compile::{self, CompileRequest, CompileResult, OutputInfo};
 use crate::error::{AppError, Result};
@@ -14,6 +14,8 @@ use crate::settings::Settings;
 use crate::state::AppState;
 use crate::templates::{self, TemplateInfo};
 use crate::texbin::TexInfo;
+use crate::texinstall;
+use crate::uninstall::{self, Footprint, RemovalReport};
 use crate::versions::{self, VersionInfo};
 
 // ── app / settings ───────────────────────────────────────────────────────────
@@ -23,6 +25,9 @@ use crate::versions::{self, VersionInfo};
 pub struct AppInfo {
     pub version: String,
     pub data_dir: String,
+    pub identifier: String,
+    /// True for `tauri dev` builds (separate data directory, no update checks).
+    pub dev: bool,
     pub tex: TexInfo,
     pub themes: Vec<&'static str>,
     pub motions: Vec<&'static str>,
@@ -34,6 +39,8 @@ pub fn get_app_info(app: AppHandle, state: State<'_, AppState>) -> Result<AppInf
     Ok(AppInfo {
         version: app.package_info().version.to_string(),
         data_dir: state.paths.root.to_string_lossy().into_owned(),
+        identifier: app.config().identifier.clone(),
+        dev: cfg!(debug_assertions),
         tex: state.tex(false)?,
         themes: crate::settings::THEMES.to_vec(),
         motions: crate::settings::MOTIONS.to_vec(),
@@ -54,6 +61,76 @@ pub fn save_settings(state: State<'_, AppState>, settings: Settings) -> Result<S
 #[tauri::command]
 pub fn detect_tex(state: State<'_, AppState>) -> Result<TexInfo> {
     state.tex(true)
+}
+
+// ── private TeX install ──────────────────────────────────────────────────────
+
+/// Starts the installer in the background; progress arrives on `tex-install:event`.
+#[tauri::command]
+pub fn install_tex(app: AppHandle, state: State<'_, AppState>) -> Result<()> {
+    if state.tex_installer.is_running() {
+        return Err(AppError::Conflict("a TeX installation is already running".into()));
+    }
+    let installer = state.tex_installer.clone();
+    let data_dir = state.paths.root.clone();
+    std::thread::spawn(move || {
+        let ok = installer.run(&app, &data_dir).is_ok();
+        // Refresh detection so the new bin directory is picked up (or a failed attempt is cleared).
+        let st = app.state::<AppState>();
+        let _ = st.tex(true);
+        if !ok {
+            let _ = texinstall::remove(&data_dir);
+        }
+    });
+    Ok(())
+}
+
+#[tauri::command]
+pub fn cancel_tex_install(state: State<'_, AppState>) -> Result<()> {
+    state.tex_installer.cancel();
+    Ok(())
+}
+
+#[tauri::command]
+pub fn remove_tex(state: State<'_, AppState>) -> Result<TexInfo> {
+    if state.tex_installer.is_running() {
+        return Err(AppError::Conflict("wait for the running installation to finish or cancel it".into()));
+    }
+    texinstall::remove(&state.paths.root)?;
+    state.tex(true)
+}
+
+#[tauri::command]
+pub fn tex_install_status(state: State<'_, AppState>) -> Result<TexInstallStatus> {
+    Ok(TexInstallStatus { running: state.tex_installer.is_running(), installed_bin: texinstall::installed_bin(&state.paths.root).map(|p| p.to_string_lossy().into_owned()), bytes: texinstall::size_on_disk(&state.paths.root) })
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TexInstallStatus {
+    pub running: bool,
+    pub installed_bin: Option<String>,
+    pub bytes: u64,
+}
+
+// ── remove Cohere ────────────────────────────────────────────────────────────
+
+#[tauri::command]
+pub fn app_footprint(app: AppHandle, state: State<'_, AppState>) -> Result<Footprint> {
+    uninstall::footprint(&state.paths, &app.config().identifier)
+}
+
+/// Exports (optional), trashes everything and quits. Returns only when something could not be moved.
+#[tauri::command]
+pub fn remove_cohere(app: AppHandle, state: State<'_, AppState>, export_dir: Option<String>) -> Result<RemovalReport> {
+    let report = uninstall::remove_everything(&state.paths, &app.config().identifier, export_dir.as_deref().map(std::path::Path::new))?;
+    if report.skipped.is_empty() {
+        std::thread::spawn(move || {
+            std::thread::sleep(std::time::Duration::from_millis(1200));
+            app.exit(0);
+        });
+    }
+    Ok(report)
 }
 
 // ── templates ────────────────────────────────────────────────────────────────

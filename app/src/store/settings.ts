@@ -4,7 +4,7 @@ import * as api from "@/api";
 import type { AppInfo, EngineId, MotionId, Settings, TexInfo, ThemeId } from "@/api/types";
 
 export const DEFAULT_SETTINGS: Settings = {
-  version: 3,
+  version: 4,
   theme: "paper",
   motion: "normal",
   engine: "pdflatex",
@@ -15,6 +15,7 @@ export const DEFAULT_SETTINGS: Settings = {
   autosaveMs: 800,
   tooltips: true,
   tooltipDelayMs: 350,
+  checkUpdates: true,
   editor: {
     fontSize: 11,
     fontFamily: "SF Mono, Menlo, Consolas, monospace",

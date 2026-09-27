@@ -397,7 +397,7 @@ mod tests {
     /// Runs the real latexmk when a TeX installation is present; otherwise it is a no-op.
     #[test]
     fn compiles_a_scaffolded_project_with_real_tex() {
-        let tex = texbin::locate(None);
+        let tex = texbin::locate(None, None);
         let Some(bin) = tex.bin_dir.clone() else {
             eprintln!("skipping: no TeX installation found");
             return;

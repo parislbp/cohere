@@ -44,6 +44,8 @@ export interface Settings {
   autosaveMs: number;
   tooltips: boolean;
   tooltipDelayMs: number;
+  /** Look for a newer release at launch — the only network request Cohere makes on its own. */
+  checkUpdates: boolean;
   editor: EditorSettings;
   ui: UiSettings;
 }
@@ -64,6 +66,9 @@ export interface TexInfo {
 export interface AppInfo {
   version: string;
   dataDir: string;
+  identifier: string;
+  /** `tauri dev` build: its own data directory, no update checks. */
+  dev: boolean;
   tex: TexInfo;
   themes: ThemeId[];
   motions: MotionId[];
@@ -268,3 +273,55 @@ export const ENGINES: { id: EngineId; name: string; blurb: string }[] = [
   { id: "xelatex", name: "XeLaTeX", blurb: "system fonts via fontspec, Unicode" },
   { id: "lualatex", name: "LuaLaTeX", blurb: "Lua scripting, modern fonts" },
 ];
+
+// ── updates ───────────────────────────────────────────────────────────────────
+
+export interface UpdateCheck {
+  currentVersion: string;
+  available: boolean;
+  version: string | null;
+  notes: string | null;
+  date: string | null;
+  /** Set when this build cannot check (development). */
+  disabled: string | null;
+}
+
+export interface UpdateProgress {
+  phase: "downloading" | "installing" | "restarting";
+  downloaded: number;
+  total: number | null;
+}
+
+// ── private TeX install ───────────────────────────────────────────────────────
+
+export type TexInstallPhase = "download" | "install" | "packages" | "verify" | "done" | "error" | "cancelled";
+
+export interface TexInstallEvent {
+  phase: TexInstallPhase;
+  line: string | null;
+  progress: number | null;
+  binDir: string | null;
+}
+
+export interface TexInstallStatus {
+  running: boolean;
+  installedBin: string | null;
+  bytes: number;
+}
+
+// ── remove Cohere ─────────────────────────────────────────────────────────────
+
+export interface Footprint {
+  dataDir: string;
+  dataBytes: number;
+  texBytes: number;
+  projects: number;
+  appBundle: string | null;
+  libraryDirs: string[];
+}
+
+export interface RemovalReport {
+  exported: number;
+  trashed: string[];
+  skipped: string[];
+}

@@ -3,6 +3,10 @@ import { call, callBytes } from "./client";
 import type {
   AppInfo,
   CompileResult,
+  Footprint,
+  RemovalReport,
+  TexInstallStatus,
+  UpdateCheck,
   EngineId,
   ExportResult,
   FileContent,
@@ -22,6 +26,20 @@ import type {
 export const app = {
   info: () => call<AppInfo>("get_app_info"),
   detectTex: () => call<TexInfo>("detect_tex"),
+  checkUpdate: () => call<UpdateCheck>("check_update"),
+  /** Downloads, verifies and installs the pending update, then relaunches. Progress on `update:progress`. */
+  installUpdate: () => call<void>("install_update"),
+  footprint: () => call<Footprint>("app_footprint"),
+  /** Exports every project into `exportDir` (when given), trashes the data dir + app, quits. */
+  remove: (exportDir: string | null) => call<RemovalReport>("remove_cohere", { exportDir }),
+};
+
+export const tex = {
+  /** Starts the private TeX Live install; progress on `tex-install:event`. */
+  install: () => call<void>("install_tex"),
+  cancelInstall: () => call<void>("cancel_tex_install"),
+  remove: () => call<TexInfo>("remove_tex"),
+  status: () => call<TexInstallStatus>("tex_install_status"),
 };
 
 export const settings = {

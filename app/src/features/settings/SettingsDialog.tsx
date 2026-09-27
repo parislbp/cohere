@@ -3,7 +3,12 @@ import { useEffect, useState } from "react";
 import { ENGINES, MOTIONS, THEMES, type EngineId, type MotionId, type ThemeId } from "@/api/types";
 import { Icon } from "@/components/icons";
 import { Button, Dialog, InfoTip, Segmented, Stepper, Switch, TextInput, Tooltip } from "@/components/ui";
-import { reveal } from "@/lib/native";
+import { confirmNative, reveal } from "@/lib/native";
+import * as api from "@/api";
+import { useTexInstallStore } from "@/store/texInstall";
+import { updateStatusLabel, useUpdaterStore } from "@/store/updater";
+import { formatBytes } from "@/lib/format";
+import { RemoveDialog } from "./RemoveDialog";
 import { useSettingsStore } from "@/store/settings";
 import { useUiStore } from "@/store/ui";
 import "./settings.css";
@@ -182,6 +187,11 @@ function CompilerTab() {
   useEffect(() => setBinDir(s.texBinDir ?? ""), [s.texBinDir]);
   const tex = info?.tex;
   const available = (id: EngineId) => (tex ? tex[id] : true);
+  const texInstall = useTexInstallStore();
+  const [privateBytes, setPrivateBytes] = useState<number | null>(null);
+  useEffect(() => {
+    if (tex?.source === "Cohere") void api.tex.status().then((st) => setPrivateBytes(st.bytes)).catch(() => setPrivateBytes(null));
+  }, [tex?.source, tex?.binDir]);
 
   return (
     <>
@@ -213,11 +223,31 @@ function CompilerTab() {
               </>
             ) : (
               <>
-                <span className="texcard__title">No TeX installation found</span>
-                <span className="texcard__meta">Install MacTeX (or BasicTeX + latexmk) or point Cohere at a bin directory below.</span>
+                <span className="texcard__title">{texInstall.running ? "Installing TeX for Cohere…" : "No TeX installation found"}</span>
+                <span className="texcard__meta">{texInstall.running ? "progress in the install window" : "Let Cohere install a private, minimal TeX Live — or install MacTeX and re-detect."}</span>
               </>
             )}
           </div>
+          {!tex?.found && (
+            <Button size="sm" variant="primary" icon="download" onClick={() => texInstall.openDialog()} tip="A private TeX Live (≈ 400 MB) inside Cohere's data folder, with only the packages the templates use" data-testid="tex-install-open">
+              {texInstall.running ? "progress" : "install TeX"}
+            </Button>
+          )}
+          {tex?.found && tex.source === "Cohere" && (
+            <Button
+              size="sm"
+              icon="trash"
+              onClick={async () => {
+                const ok = await confirmNative(`Remove TeX for Cohere (${formatBytes(privateBytes)})? Compiling needs a TeX installation; you can install it again any time.`, "Remove TeX for Cohere");
+                if (!ok) return;
+                await api.tex.remove();
+                await redetectTex();
+              }}
+              tip={`Delete Cohere's private TeX Live${privateBytes ? ` (${formatBytes(privateBytes)})` : ""}`}
+            >
+              remove
+            </Button>
+          )}
           <Button
             size="sm"
             icon="refresh"
@@ -258,6 +288,11 @@ function CompilerTab() {
 
 function AboutTab() {
   const info = useSettingsStore((st) => st.appInfo);
+  const s = useSettingsStore((st) => st.settings);
+  const update = useSettingsStore((st) => st.update);
+  const upd = useUpdaterStore();
+  const [removeOpen, setRemoveOpen] = useState(false);
+  const checking = upd.status === "checking";
   return (
     <>
       <div className="settings__section about">
@@ -266,7 +301,21 @@ function AboutTab() {
           <span className="about__tag">a local-first LaTeX writing desk</span>
         </div>
         <Row label="Version">
-          <span className="mono">{info?.version ?? "—"}</span>
+          <span className="row" style={{ gap: 8 }}>
+            <span className="mono">{info?.version ?? "—"}</span>
+            {info?.dev && <span className="dim">· development build</span>}
+          </span>
+        </Row>
+        <Row label="Updates" info="Cohere asks GitHub for the latest release when it starts — the only network request it makes on its own. Updates are signed; the download is verified before anything is replaced.">
+          <span className="row" style={{ gap: 8 }}>
+            <Switch on={s.checkUpdates} onChange={(v) => update({ checkUpdates: v })} label="Check for updates at launch" />
+            <span className="dim" data-testid="update-status">
+              {updateStatusLabel(upd)}
+            </span>
+            <Button size="sm" icon={upd.status === "available" ? "download" : "refresh"} loading={checking} onClick={() => (upd.status === "available" ? upd.openDialog() : void upd.checkNow())} tip={upd.status === "available" ? "Show the update" : "Ask GitHub for the newest release now"} data-testid="update-check">
+              {upd.status === "available" ? "install…" : "check now"}
+            </Button>
+          </span>
         </Row>
         <Row label="Data" info="Everything lives here: projects, builds, versions, settings. Deleted projects go to .trash inside it.">
           <span className="row" style={{ gap: 6 }}>
@@ -288,7 +337,13 @@ function AboutTab() {
             <kbd className="kbd">⌘K</kbd> commands <kbd className="kbd">⌘⇧↩</kbd> compile <kbd className="kbd">⌘S</kbd> save <kbd className="kbd">⌘1</kbd> <kbd className="kbd">⌥←</kbd> sidebar <kbd className="kbd">⌘B</kbd> <kbd className="kbd">⌘I</kbd> <kbd className="kbd">⌘U</kbd> <kbd className="kbd">⌘⇧C</kbd> bold · emph · underline · code <kbd className="kbd">⌘⇧G</kbd> gutter <kbd className="kbd">⌘⌥=</kbd> <kbd className="kbd">⌘⌥−</kbd> text size <kbd className="kbd">⌘⇧M</kbd> problems <kbd className="kbd">⌘⇧↓</kbd> <kbd className="kbd">⌥↓</kbd> status line <kbd className="kbd">⌘,</kbd> settings <kbd className="kbd">⌘⇧H</kbd> library
           </span>
         </Row>
+        <Row label="Remove" info="Moves the app, your data folder (projects, versions, TeX for Cohere) and Cohere's system files to the Trash, then quits. You can export every project as a zip first.">
+          <Button size="sm" variant="danger" icon="trash" onClick={() => setRemoveOpen(true)} data-testid="remove-open">
+            remove Cohere…
+          </Button>
+        </Row>
       </div>
+      <RemoveDialog open={removeOpen} onClose={() => setRemoveOpen(false)} />
     </>
   );
 }

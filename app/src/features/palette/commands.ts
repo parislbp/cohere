@@ -8,6 +8,8 @@ import { SHORTCUTS } from "@/lib/keys";
 import { useLibraryStore } from "@/store/library";
 import { useProjectStore } from "@/store/project";
 import { useSettingsStore } from "@/store/settings";
+import { useUpdaterStore } from "@/store/updater";
+import { useTexInstallStore } from "@/store/texInstall";
 import { useUiStore } from "@/store/ui";
 import { goToLibrary } from "@/App";
 
@@ -50,6 +52,12 @@ export function buildCommands(): Command[] {
   cmds.push({ id: "nav.settings", title: "Open Settings", group: "navigate", icon: "settings", kbd: SHORTCUTS.settings, run: () => ui.openSettings() });
   cmds.push({ id: "nav.settings.compiler", title: "Settings › Compiler", group: "navigate", icon: "compile", keywords: "engine tex latexmk", run: () => ui.openSettings("compiler") });
   cmds.push({ id: "nav.settings.editor", title: "Settings › Editor", group: "navigate", icon: "cursorText", keywords: "font wrap spellcheck autosave", run: () => ui.openSettings("editor") });
+  cmds.push({ id: "nav.settings.about", title: "Settings › About", group: "navigate", icon: "info", keywords: "version updates remove uninstall", run: () => ui.openSettings("about") });
+  {
+    const upd = useUpdaterStore.getState();
+    cmds.push({ id: "app.update", title: upd.status === "available" ? `Install Cohere ${upd.check?.version ?? ""}` : "Check for updates", group: "settings", icon: upd.status === "available" ? "download" : "refresh", keywords: "update upgrade release version new", state: upd.status === "upToDate" ? "up to date" : undefined, run: () => (upd.status === "available" ? upd.openDialog() : void upd.checkNow()) });
+    if (settings.appInfo && !settings.appInfo.tex.found) cmds.push({ id: "app.tex", title: "Install TeX for Cohere", group: "settings", icon: "download", keywords: "latex texlive latexmk missing compile", run: () => useTexInstallStore.getState().openDialog() });
+  }
   if (!inEditor) cmds.push({ id: "lib.new", title: "New project", group: "project", icon: "plus", kbd: SHORTCUTS.newFile, keywords: "create template", run: () => window.dispatchEvent(new CustomEvent("cohere:new-project")) });
   if (!inEditor) cmds.push({ id: "lib.search", title: "Search the Library", group: "navigate", icon: "search", kbd: SHORTCUTS.find, run: () => useLibraryStore.getState().toggleSearch(true) });
   if (!inEditor) {

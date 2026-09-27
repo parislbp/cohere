@@ -37,3 +37,8 @@ export async function openExternal(path: string): Promise<void> {
     console.warn("open failed", e);
   }
 }
+
+export async function pickFolder(title = "Choose a folder"): Promise<string | null> {
+  const res = await open({ multiple: false, directory: true, title });
+  return typeof res === "string" && res ? res : null;
+}

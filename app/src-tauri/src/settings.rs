@@ -24,6 +24,8 @@ pub struct Settings {
     pub autosave_ms: u32,
     pub tooltips: bool,
     pub tooltip_delay_ms: u32,
+    /// Look for a newer release on GitHub at launch (the only network request Cohere makes on its own).
+    pub check_updates: bool,
     pub editor: EditorSettings,
     pub ui: UiSettings,
 }
@@ -71,6 +73,7 @@ impl Default for Settings {
             autosave_ms: 800,
             tooltips: true,
             tooltip_delay_ms: 350,
+            check_updates: true,
             editor: EditorSettings::default(),
             ui: UiSettings::default(),
         }
@@ -110,7 +113,7 @@ impl Default for UiSettings {
     }
 }
 
-pub const SETTINGS_VERSION: u32 = 3;
+pub const SETTINGS_VERSION: u32 = 4;
 pub const THEMES: [&str; 4] = ["paper", "mist", "ink", "graphite"];
 pub const MOTIONS: [&str; 4] = ["off", "slow", "normal", "fast"];
 pub const ENGINES: [&str; 3] = ["pdflatex", "xelatex", "lualatex"];
@@ -144,6 +147,11 @@ impl Settings {
             // v3: the outputs section starts folded so files and the outline get the room.
             self.ui.sidebar_folded[2] = true;
             self.version = 3;
+        }
+        if self.version < 4 {
+            // v4: the launch update check arrived; older files never said no to it.
+            self.check_updates = true;
+            self.version = 4;
         }
         if !THEMES.contains(&self.theme.as_str()) {
             self.theme = "paper".into();
@@ -202,11 +210,14 @@ mod tests {
         let s: Settings = serde_json::from_str(r#"{"editor":{"fontSize":14}}"#).unwrap();
         let s = s.normalised();
         assert_eq!(s.editor.font_size, 11);
-        assert_eq!(s.version, 3);
+        assert_eq!(s.version, SETTINGS_VERSION);
         assert_eq!(s.ui.sidebar_folded, [false, false, true]);
+        assert!(s.check_updates, "v4 turns the launch update check on for older files");
         let again: Settings = serde_json::from_str(r#"{"version":3,"editor":{"fontSize":14},"ui":{"sidebarFolded":[false,false,false]}}"#).unwrap();
         let again = again.normalised();
         assert_eq!(again.editor.font_size, 14, "a v3 file keeps the user's choice");
         assert_eq!(again.ui.sidebar_folded, [false, false, false]);
+        let v4: Settings = serde_json::from_str(r#"{"version":4,"checkUpdates":false}"#).unwrap();
+        assert!(!v4.normalised().check_updates, "a v4 file keeps the user's choice");
     }
 }

@@ -2,7 +2,7 @@
   "name": "cohere",
   "private": true,
   "version": "0.1.0",
-  "description": "Cohere \u2014 a local-first LaTeX writing desk",
+  "description": "Cohere — a local-first LaTeX writing desk",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -31,7 +31,7 @@
     "@tauri-apps/api": "^2.10.1",
     "@tauri-apps/plugin-dialog": "^2.7.0",
     "@tauri-apps/plugin-opener": "^2.5.0",
-    "pdfjs-dist": "^5.4.0",
+    "pdfjs-dist": "^6.3.289",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zustand": "^5.0.0"

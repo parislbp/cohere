@@ -22,8 +22,7 @@ export async function loadPdfDocument(data: Uint8Array): Promise<PDFDocumentProx
   ensureWorker();
   const task = pdfjs.getDocument({
     data: new Uint8Array(data),
-    // The app CSP has no 'unsafe-eval'; pdf.js falls back to its interpreter for PostScript functions.
-    isEvalSupported: false,
+    // pdf.js ≥ 6 never uses eval, so the app CSP can stay without 'unsafe-eval'.
     verbosity: pdfjs.VerbosityLevel.ERRORS,
   });
   try {
@@ -39,7 +38,7 @@ export async function loadPdfDocument(data: Uint8Array): Promise<PDFDocumentProx
 export async function destroyDocument(doc: PDFDocumentProxy | null | undefined): Promise<void> {
   if (!doc) return;
   try {
-    await doc.destroy();
+    await doc.loadingTask.destroy();
   } catch {
     // Already destroyed or the worker is gone; nothing left to release.
   }

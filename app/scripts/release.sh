@@ -6,7 +6,7 @@
 #   NOTES_FILE=path scripts/release.sh 0.2.0   notes from another file
 #   SKIP_CHECK=1 …                             skip typecheck/lint/tests (not recommended)
 #
-# The GitHub Release carries: the DMG (versioned + a stable `Cohere.dmg` for the website link),
+# The GitHub Release carries: the DMG (`cohere-<version>.dmg`; the README's download link is rewritten to it),
 # the updater archive and its signature, latest.json (what installed copies poll) and SHA256SUMS.
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
@@ -92,8 +92,15 @@ manifest = {
 }
 pathlib.Path(out).write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
 EOF
-cp "$RELEASE_DIR/${PRODUCT}_${VERSION}_aarch64.dmg" "$RELEASE_DIR/$PRODUCT.dmg"
-ok "CHANGELOG.md updated · latest.json written"
+DMG_URL="https://github.com/$GITHUB_REPO/releases/download/$TAG/cohere-$VERSION.dmg"
+python3 - "$REPO_DIR/README.md" "$DMG_URL" "$VERSION" <<'EOF'
+import re, sys, pathlib
+p, url, v = pathlib.Path(sys.argv[1]), sys.argv[2], sys.argv[3]
+t = p.read_text()
+t = re.sub(r"\*\*\[cohere-[0-9.]+\.dmg\]\([^)]+\)\*\*", f"**[cohere-{v}.dmg]({url})**", t)
+p.write_text(t)
+EOF
+ok "CHANGELOG.md updated · latest.json written · README download link → cohere-$VERSION.dmg"
 
 step "secrets scan"
 "$SCRIPTS_DIR/check-secrets.sh" --all || die "refusing to release with a possible secret in the tree"
@@ -107,8 +114,7 @@ ok "pushed master and $TAG"
 
 step "GitHub release"
 gh release create "$TAG" --repo "$GITHUB_REPO" --title "Cohere $VERSION" --notes-file "$NOTES_MD" --latest \
-  "$RELEASE_DIR/${PRODUCT}_${VERSION}_aarch64.dmg" \
-  "$RELEASE_DIR/$PRODUCT.dmg" \
+  "$RELEASE_DIR/cohere-$VERSION.dmg" \
   "$RELEASE_DIR/$PRODUCT.app.tar.gz" \
   "$RELEASE_DIR/$PRODUCT.app.tar.gz.sig" \
   "$RELEASE_DIR/latest.json" \
@@ -123,5 +129,5 @@ GOT="$(curl -fsSL "https://github.com/$GITHUB_REPO/releases/latest/download/late
 
 say ""
 say "${BOLD}Cohere $VERSION is out.${NC}"
-say "  download:  https://github.com/$GITHUB_REPO/releases/latest/download/$PRODUCT.dmg"
+say "  download:  $DMG_URL"
 say "  install here: make install"

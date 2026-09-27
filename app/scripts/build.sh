@@ -1,7 +1,7 @@
 #!/bin/bash
 # Build the signed, notarized, stapled DMG plus the signed updater archive.
 #
-#   scripts/build.sh              → release/Cohere_<v>_aarch64.dmg · Cohere.app.tar.gz · Cohere.app.tar.gz.sig
+#   scripts/build.sh              → release/cohere-<v>.dmg · Cohere.app.tar.gz · Cohere.app.tar.gz.sig
 #   scripts/build.sh --no-notary  → skip notarization (local testing only; Gatekeeper will complain on other Macs)
 #
 # `tauri build` signs the .app with the Developer ID (hardened runtime, timestamp) and writes the
@@ -62,9 +62,10 @@ fi
 step "collect"
 mkdir -p "$RELEASE_DIR"
 rm -f "$RELEASE_DIR"/*.dmg "$RELEASE_DIR"/*.tar.gz "$RELEASE_DIR"/*.sig
-cp "$DMG" "$RELEASE_DIR/"
+DMG_NAME="cohere-${VERSION}.dmg"
+cp "$DMG" "$RELEASE_DIR/$DMG_NAME"
 cp "$TAR" "$SIG" "$RELEASE_DIR/"
-(cd "$RELEASE_DIR" && shasum -a 256 "$(basename "$DMG")" "$PRODUCT.app.tar.gz" > SHA256SUMS.txt)
+(cd "$RELEASE_DIR" && shasum -a 256 "$DMG_NAME" "$PRODUCT.app.tar.gz" > SHA256SUMS.txt)
 ok "release/ → $(ls "$RELEASE_DIR" | tr '\n' ' ')"
 say ""
 say "  ${DIM}app bundle: $APP${NC}"

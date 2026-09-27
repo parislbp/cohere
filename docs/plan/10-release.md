@@ -60,12 +60,12 @@ make release VERSION=0.2.1 NOTES="Fixes the outline for \\part"   # writes docs/
    ```
 7. **secrets scan** over every tracked file.
 8. **commit** `Release vX.Y.Z` (version bump + changelog + notes), **tag** `vX.Y.Z`, **push** both.
-9. **GitHub Release** marked *latest*, with `Cohere_X.Y.Z_aarch64.dmg`, a stable-named `Cohere.dmg`
-   (for a website link that never changes), `Cohere.app.tar.gz`, `.sig`, `latest.json`, `SHA256SUMS.txt`.
+9. **GitHub Release** marked *latest*, with `cohere-X.Y.Z.dmg`, `Cohere.app.tar.gz`, `.sig`, `latest.json`,
+   `SHA256SUMS.txt`. The README's download link is rewritten to the versioned DMG in the release commit.
 10. **verify** that `…/releases/latest/download/latest.json` now serves the new version.
 
-Stable links:
-- download: `https://github.com/parislbp/cohere/releases/latest/download/Cohere.dmg`
+Links:
+- download: `https://github.com/parislbp/cohere/releases/download/vX.Y.Z/cohere-X.Y.Z.dmg` (README always points at the newest)
 - updater endpoint (in `tauri.conf.json`): `https://github.com/parislbp/cohere/releases/latest/download/latest.json`
 
 ## How an installed copy updates

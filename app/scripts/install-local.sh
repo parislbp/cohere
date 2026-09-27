@@ -16,7 +16,7 @@ if [ "${1:-}" = "--app" ]; then
   [ -d "$SRC" ] || die "no build at $SRC — run: make build"
   rm -rf "$DEST" && ditto "$SRC" "$DEST"
 else
-  DMG="$(ls -t "$RELEASE_DIR"/${PRODUCT}_*_aarch64.dmg 2>/dev/null | head -1)"
+  DMG="$(ls -t "$RELEASE_DIR"/cohere-*.dmg 2>/dev/null | head -1)"
   [ -n "$DMG" ] || die "no DMG in release/ — run: make build"
   MNT="$(mktemp -d /tmp/cohere-dmg.XXXX)"
   hdiutil attach "$DMG" -nobrowse -readonly -mountpoint "$MNT" -quiet || die "could not mount $DMG"

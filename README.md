@@ -10,8 +10,8 @@ If there is none, it installs a private, minimal one for itself.
 
 ## Install
 
-Download **[Cohere.dmg](https://github.com/parislbp/cohere/releases/latest/download/Cohere.dmg)**,
-open it, drag Cohere to Applications. Signed and notarized; Apple Silicon; macOS 12 or newer.
+Download **[cohere-0.2.1.dmg](https://github.com/parislbp/cohere/releases/download/v0.2.1/cohere-0.2.1.dmg)**
+(all versions on the [releases page](https://github.com/parislbp/cohere/releases)), open it, drag Cohere to Applications. Signed and notarized; Apple Silicon; macOS 12 or newer.
 
 Cohere checks this repository's releases for updates when it starts (you can turn that off) and
 installs them in place after verifying their signature. That check is the only network request

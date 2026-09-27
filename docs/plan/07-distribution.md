@@ -1,4 +1,6 @@
-# Distribution (next phase — not part of v0.1.0)
+# Distribution ✅ (implemented in 0.2.0 — see `10-release.md` for the runbook)
+
+> Status: everything in *Goals* shipped in 0.2.0. Decisions taken: Apple Silicon only · macOS 12+ · GitHub Releases host both the DMG and the updater manifest (`latest.json`) · TeX strategy **A + C** (system TeX, else *Install TeX for Cohere*) · uninstall from Settings › About. The sections below are the original design, kept for the reasoning.
 
 ## Goals
 

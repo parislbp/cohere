@@ -98,6 +98,17 @@ Working log for the build. Milestones are ordered; each has a definition of done
 - [x] ⌘K command palette: every command in one searchable list (fuzzy, ranks prefixes and word starts), grouped when empty, shows shortcuts and current state, arrow/Enter/Esc; components subscribe to `cohere:*` events for actions they own
 - [x] Workbook project: compiles cleanly again (51 pages) after the fix above
 
+## M12 — Packaging, updates, TeX, removal ✅ (2026-09-27)
+
+- [x] Repository `parislbp/cohere` (public, MIT): `app/`, `docs/`, root `Makefile`, `.gitignore` that excludes keys/transcripts/build output; secret scanning + push protection; pre-commit secret scan (`scripts/check-secrets.sh`); commits under the GitHub noreply address
+- [x] Signing + notarization: Developer ID with hardened runtime via `tauri build`; DMG notarized with the `cohere-notary` keychain profile and stapled; `scripts/build.sh` verifies authority, runtime flag and version before submitting
+- [x] Updater: `tauri-plugin-updater`, minisign keypair (private half in the keychain, public in `tauri.conf.json`), `latest.json` on the GitHub Release marked latest; Rust `check_update`/`install_update` with `update:progress`; dialog with release notes → install and relaunch; About tab (check at launch · status · check now); ⌘K command; settings v4 `checkUpdates`
+- [x] Release pipeline `make release VERSION=` — bump · check · build · changelog · commit · tag · push · GitHub Release with DMG (+ stable `Cohere.dmg`), archive, signature, manifest, checksums; `make install` / `make uninstall`
+- [x] Install TeX for Cohere: portable TeX Live (scheme-basic + template packages, ≈ 420 MB) in the data folder; four phases streamed on `tex-install:event`; probe compile; detection source "Cohere"; remove from Settings › Compiler; launch nudge when no TeX is found. Verified by a real install (`real_install` test, 55 s)
+- [x] Remove Cohere: footprint, optional export-all, everything to `~/.Trash`, quit
+- [x] `tauri dev` uses `com.cohere.desk.dev` for its data so the installed app's library is never touched
+- [x] Docs: `10-release.md` runbook, `documentation/v0.2.0.md`, `docs/releases/`, `CHANGELOG.md`, README
+
 ## Later milestones
 
 | milestone | content |

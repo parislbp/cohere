@@ -5,6 +5,14 @@ matching GitHub Release and is shown inside the app when an update is offered.
 
 <!-- `make release` inserts the new version below this line. -->
 
+## 0.2.1 — 2026-09-27
+
+A small follow-up that also exercises the update path for the first time.
+
+- Settings migrated at startup are written back immediately, so `settings.json` always reflects the running version.
+- If you are reading this inside Cohere's update dialog: the signed download, verification and install-and-relaunch flow works.
+
+
 ## 0.2.0 — 2026-09-27
 
 The first installable release: a signed, notarized app that keeps itself up to date.

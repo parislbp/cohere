@@ -1,6 +1,6 @@
 [package]
 name = "cohere"
-version = "0.2.0"
+version = "0.2.1"
 description = "Cohere — a local-first LaTeX writing desk"
 authors = ["Paris LBP"]
 edition = "2021"
